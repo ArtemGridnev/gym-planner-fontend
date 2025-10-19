@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { login } from "../services/authService";
 import { useAuthContext } from "../context/AuthProvider";
 import { loginFormFields as formFields } from "../forms/loginFormFields";
@@ -54,6 +54,10 @@ export default function useLogin() {
 
         return isValid;
     };
+
+    useEffect(() => {
+        validateFields();
+    }, [form, touched]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
