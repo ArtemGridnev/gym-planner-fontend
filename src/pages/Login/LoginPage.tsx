@@ -1,10 +1,14 @@
-import { Box, Button, Container, Paper, Typography } from "@mui/material";
+import { Box, Container, Paper, Typography } from "@mui/material";
 import LoginForm from "./LoginForm";
 import { Link, useNavigate } from "react-router-dom";
 
-export default function LoginPage() {
-    const navigate = useNavigate();
+type LoginPageProps = {
+    redirectPath?: string | null
+};
 
+export default function LoginPage({ redirectPath = null } : LoginPageProps) {
+    const navigate = useNavigate();
+    
     return (
         <Box 
             sx={{ background: "#f1f1f1" }}
@@ -26,7 +30,7 @@ export default function LoginPage() {
                         p: 2
                     }}
                 >
-                    <LoginForm onSuccess={() => {navigate('/dashboard')}} />
+                    <LoginForm onSuccess={() => navigate(redirectPath ?? '/dashboard')} />
                     <Typography
                         sx={{ mt: 1.5, textAlign: 'center' }}
                     >

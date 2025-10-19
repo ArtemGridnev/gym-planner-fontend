@@ -22,9 +22,9 @@ export default function AuthProvider({ children } : { children: React.ReactNode 
         try {
             await logoutService();
 
-            setUser(null);
+            localStorage.setItem('logout', Date.now().toString());
 
-            navigate('/login');
+            setUser(null);
         } catch (error) {
             throw error;
         }
@@ -34,8 +34,6 @@ export default function AuthProvider({ children } : { children: React.ReactNode 
         try {
             const user = await getCurrentUser();
           
-            console.log('user', user);
-
             setUser(user);
         } catch (error) {
             console.error(error);
@@ -46,6 +44,16 @@ export default function AuthProvider({ children } : { children: React.ReactNode 
 
     useEffect(() => {
         fetchUser();
+
+        const handleStorage = (e: StorageEvent) => {
+            if (e.key === "logout") {
+                setUser(null);
+            }    
+        };
+
+        window.addEventListener('storage', (e) => handleStorage(e));
+
+        return () => window.removeEventListener('storage', handleStorage);
     }, []);
 
     return (

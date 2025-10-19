@@ -1,12 +1,12 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuthContext } from "../../context/AuthProvider";
-
+import LoginPage from "../../pages/Login/LoginPage";
 export default function ProtectedRoute() {
     const { user, loading } = useAuthContext();
 
     if (loading) return <div>Loading...</div>;
 
-    if (!user) return <Navigate to="/login" />
+    if (!user) return <LoginPage />;
 
     return <Outlet />;
 }
