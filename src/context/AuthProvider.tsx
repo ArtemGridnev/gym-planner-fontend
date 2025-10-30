@@ -1,12 +1,12 @@
-import { createContext, useContext, useEffect, useState } from "react"
+import { createContext, useContext, useEffect, useRef, useState } from "react"
 import type { User } from "../types/user"
 import { logout as logoutService } from "../services/authService";
 import { getCurrentUser } from "../services/usersService";
-import { useNavigate } from "react-router-dom";
+import useUser from "../hooks/useUser";
 
 interface AuthContextType {
     user: User | null;
-    loading: boolean,
+    loading: boolean;
     setUser: (user: User | null) => void;
     logout: () => void;
 }
@@ -14,19 +14,22 @@ interface AuthContextType {
 export const AuthContext = createContext<AuthContextType | null>(null)
 
 export default function AuthProvider({ children } : { children: React.ReactNode }) {
-    const navigate = useNavigate();
-    const [user, setUser] = useState<User | null>(null);
+    const { user, setUser } = useUser();
     const [loading, setLoading] = useState(true);
+
+    const userRef = useRef<User | null>(null);
+
+    useEffect(() => {
+        userRef.current = user;
+    }, [user]);
 
     const logout = async () => {
         try {
             await logoutService();
 
-            localStorage.setItem('logout', Date.now().toString());
-
             setUser(null);
         } catch (error) {
-            throw error;
+            console.error(error);
         }
     };
 
@@ -42,16 +45,22 @@ export default function AuthProvider({ children } : { children: React.ReactNode 
         setLoading(false);
     };
 
+    const handleStorage = (e: StorageEvent) => {
+        if (e.key === "logout") {
+            setUser(null);
+        } else if (e.key === "login") {
+            console.log('user', userRef, !userRef)
+
+            if (!userRef.current) {
+                fetchUser();
+            }
+        } 
+    };
+
     useEffect(() => {
         fetchUser();
 
-        const handleStorage = (e: StorageEvent) => {
-            if (e.key === "logout") {
-                setUser(null);
-            }    
-        };
-
-        window.addEventListener('storage', (e) => handleStorage(e));
+        window.addEventListener('storage', handleStorage);
 
         return () => window.removeEventListener('storage', handleStorage);
     }, []);

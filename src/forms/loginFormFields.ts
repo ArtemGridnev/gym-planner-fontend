@@ -1,6 +1,6 @@
-import type { FormCompFieldProps } from "../components/form/Form";
+import type { FormFieldSchema } from "../types/formFieldSchema";
 
-export const loginFormFields: FormCompFieldProps[] = [
+export const loginFormFields: FormFieldSchema[] = [
     {
         label: "Email",
         name: "email",

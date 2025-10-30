@@ -1,11 +1,11 @@
-import { Box, Button, CircularProgress, TextField, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import useLogin from "../../hooks/useLogin";
-import Alerts from "../../components/Alerts";
+import Alerts from "../Alerts";
 import { useEffect } from "react";
-import Form from "../../components/form/Form";
+import Form from "../form/Form";
 
 type LoginFormProps = {
-    onSuccess: () => void
+    onSuccess: () => void;
 };
 
 export default function LoginForm({ onSuccess }: LoginFormProps) {
@@ -25,11 +25,11 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
     return (
         <>
             <Alerts success={success} error={error} />
-            <Typography variant="h5" gutterBottom>
+            <Typography variant="h5" component="h1" gutterBottom>
                 Sign in
             </Typography>
             <Box sx={{mt: 2}}>
-                <Form formFields={formFields} {...formState} onSubmit={handleSubmit} loading={loading} />
+                <Form formFields={formFields} {...formState} submitButtonText="Sign in" onSubmit={handleSubmit} loading={loading} />
             </Box>
         </>
     );

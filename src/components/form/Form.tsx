@@ -1,20 +1,14 @@
-import { Box, Button, CircularProgress } from "@mui/material"
-import type { FormFieldProps } from "./FormField"
-import FormField from "./FormField"
-
-export type FormCompFieldProps = {
-    name: string;
-    label: string;
-    type: "text" | "email" | "password";
-    required?: boolean;
-};
+import { Box, Button, CircularProgress } from "@mui/material";
+import type { FormFieldSchema } from '../../types/formFieldSchema';
+import FormField from "./FormField";
 
 type FormProps = {
-    formFields: FormCompFieldProps[];
+    formFields: FormFieldSchema[];
     form: Record<string, string>;
     errors: Record<string, string | null>;
     handleChange: (field: string, value: string) => void;
     handleBlur: (field: string) => void;
+    submitButtonText: string,
     onSubmit: (e: React.FormEvent) => void;
     loading: boolean;
 };
@@ -25,23 +19,10 @@ export default function Form({
     errors,
     handleChange,
     handleBlur,
+    submitButtonText,
     onSubmit,
     loading
 }: FormProps) {
-    const getField = (field: FormCompFieldProps, index: number) => {
-        const fieldProps: FormFieldProps = {
-            ...field,
-            value: form[field.name],
-            error: errors[field.name],
-            onChange: handleChange,
-            onBlur: handleBlur
-        };
-
-        return (
-            <FormField {...fieldProps} key={index}></FormField>
-        );
-    };
-
     return (
         <Box
             component="form"
@@ -50,12 +31,24 @@ export default function Form({
                 flexDirection: "column",
                 gap: 2
             }}
-            onSubmit={(e) => onSubmit(e)}
+            onSubmit={onSubmit}
             noValidate
         >
-            {formFields.map((field, index) => getField(field, index))}
+            {formFields.map((field, index) => (
+                <FormField 
+                    {...{
+                        ...field,
+                        value: form[field.name],
+                        error: errors[field.name],
+                        onChange: handleChange,
+                        onBlur: handleBlur
+                    }} 
+                    key={index}
+                ></FormField>
+            ))}
+
             <Button type="submit" variant="contained" disabled={loading}>
-                {loading ? <CircularProgress size={20} color="inherit" /> : "Sing Up"}
+                {loading ? <CircularProgress size={20} color="inherit" /> : submitButtonText}
             </Button>
         </Box>
     );

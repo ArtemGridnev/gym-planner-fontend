@@ -1,5 +1,5 @@
 import { Box, Container, Paper, Typography } from "@mui/material";
-import RegisterForm from "./RegisterFrom";
+import RegisterForm from "../../components/forms/RegisterFrom";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function RegisterPage() {
@@ -26,7 +26,7 @@ export default function RegisterPage() {
                         p: 2
                     }}
                 >
-                    <RegisterForm onSuccess={() => {navigate('/dashboard')}} />
+                    <RegisterForm onSuccess={() => navigate('/train-sessions')} />
                     <Typography
                         sx={{ mt: 1.5, textAlign: 'center' }}
                     >

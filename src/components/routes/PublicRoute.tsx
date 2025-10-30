@@ -6,7 +6,7 @@ export default function PublicRoute() {
 
     if (loading) return <div>Loading...</div>;
 
-    if (user) return <Navigate to="/dashboard" />
+    if (user) return <Navigate to="/train-sessions" />
 
     return <Outlet />;
 }
