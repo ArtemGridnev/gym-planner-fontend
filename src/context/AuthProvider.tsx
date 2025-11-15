@@ -2,7 +2,6 @@ import { createContext, useContext, useEffect, useRef, useState } from "react"
 import type { User } from "../types/user"
 import { logout as logoutService } from "../services/authService";
 import { getCurrentUser } from "../services/usersService";
-import useUser from "../hooks/useUser";
 
 interface AuthContextType {
     user: User | null;
@@ -14,7 +13,7 @@ interface AuthContextType {
 export const AuthContext = createContext<AuthContextType | null>(null)
 
 export default function AuthProvider({ children } : { children: React.ReactNode }) {
-    const { user, setUser } = useUser();
+    const [ user, setUser ] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
 
     const userRef = useRef<User | null>(null);
@@ -28,6 +27,7 @@ export default function AuthProvider({ children } : { children: React.ReactNode 
             await logoutService();
 
             setUser(null);
+            localStorage.setItem('logout', Date.now().toString());
         } catch (error) {
             console.error(error);
         }
@@ -46,15 +46,17 @@ export default function AuthProvider({ children } : { children: React.ReactNode 
     };
 
     const handleStorage = (e: StorageEvent) => {
+        if (e.newValue === e.oldValue) return;
+
         if (e.key === "logout") {
             setUser(null);
-        } else if (e.key === "login") {
-            console.log('user', userRef, !userRef)
-
-            if (!userRef.current) {
-                fetchUser();
-            }
         } 
+        
+        // else if (e.key === "login") {
+        //     if (!userRef.current) {
+        //         fetchUser();
+        //     }
+        // } 
     };
 
     useEffect(() => {

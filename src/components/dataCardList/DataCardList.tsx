@@ -13,15 +13,15 @@ export type DataCardListRowProps = {
     icon: ElementType;
     title: string;
     data: Record<string, any>;
+    menuItems?: MenuItemProps[];
 };
 
 export type DataCardListProps = {
     columns: DataCardListColumnProps[];
     rows: DataCardListRowProps[];
-    rowMenuItems?: MenuItemProps[];
 };
 
-export default function DataCardList({ columns, rows, rowMenuItems }: DataCardListProps) {
+export default function DataCardList({ columns, rows }: DataCardListProps) {
     return (
         <Box sx={{
             containerName: 'CardListContainer',
@@ -41,7 +41,7 @@ export default function DataCardList({ columns, rows, rowMenuItems }: DataCardLi
                     <DataCard
                         title={row.title}
                         icon={row.icon}
-                        menuItems={rowMenuItems}
+                        menuItems={row.menuItems}
                         key={index}
                     >
                         <Box sx={{ 

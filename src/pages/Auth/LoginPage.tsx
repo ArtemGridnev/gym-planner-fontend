@@ -30,6 +30,9 @@ export default function LoginPage({ redirectPath = null } : LoginPageProps) {
                         p: 2
                     }}
                 >
+                    <Typography variant="h5" component="h1" gutterBottom>
+                        Sign in
+                    </Typography>
                     <LoginForm onSuccess={() => navigate(redirectPath ?? '/train-sessions')} />
                     <Typography
                         sx={{ mt: 1.5, textAlign: 'center' }}

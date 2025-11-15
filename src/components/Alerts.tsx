@@ -9,7 +9,12 @@ export default function Alerts({ success = null, error = null }: AlertsProps) {
     return (
         <>
             {(success || error) &&
-                <Stack spacing={1} sx={{ mb: 2 }} >
+                <Stack spacing={1} sx={{ 
+                    mb: '1rem',
+                    "& .MuiAlert-message": {
+                        whiteSpace: "pre-wrap"
+                    }
+                }} >
                     {success && <Alert severity="success">{success}</Alert>}
                     {error && <Alert severity="error">{error}</Alert>}
                 </Stack>

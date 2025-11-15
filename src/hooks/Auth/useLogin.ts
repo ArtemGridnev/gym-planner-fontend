@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { register } from "../services/authService";
-import { registerFormFields as formFields } from "../forms/registerFormFields";
-import { useAuthContext } from "../context/AuthProvider";
-import useForm from "./useForm";
+import { login } from "../../services/authService";
+import { useAuthContext } from "../../context/AuthProvider";
+import { loginFormFields as formFields } from "../../forms/loginFormFields";
+import useForm from "../Form/useForm";
 
-export default function useRegister() {
+export default function useLogin() {
     const { setUser } = useAuthContext();
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState<string | null>(null);
@@ -30,18 +30,13 @@ export default function useRegister() {
         }
 
         try {
-            const data = await register({ 
-                firstName: form.firstName, 
-                lastName: form.lastName, 
-                email: form.email, 
-                password: form.password 
-            });
+            const data = await login(form.email, form.password);
 
             setUser(data.user);
             
-            setSuccess('Registered successfully!');
+            setSuccess('Logged in successfully!');
         } catch (err: any) {
-            setError(err.message || "Register failed");
+            setError(err.message || "Login failed");
         }
 
         setLoading(false);

@@ -1,5 +1,5 @@
-import { Box, Typography } from "@mui/material";
-import useRegister from "../../hooks/useRegister";
+import { Box } from "@mui/material";
+import useRegister from "../../hooks/Auth/useRegister";
 import Form from "../form/Form";
 import Alerts from "../Alerts";
 import { useEffect } from "react";
@@ -25,10 +25,7 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
     return (
         <>
             <Alerts success={success} error={error} />
-            <Typography variant="h5" component="h1" gutterBottom>
-                Sign up
-            </Typography>
-            <Box sx={{mt: 2}}>
+            <Box>
                 <Form formFields={formFields} {...formState} submitButtonText="Sign up" onSubmit={handleSubmit} loading={loading} />
             </Box>
         </>

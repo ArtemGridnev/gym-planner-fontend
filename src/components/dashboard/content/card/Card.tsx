@@ -9,13 +9,15 @@ export default function ContentCard({ children, width = '100%' }: ContentCardPro
     return (
         <Box 
             sx={{ 
+                display: 'flex',
                 width,
                 height: '100%',
                 background: 'white',
                 borderColor: 'divider', 
                 borderWidth: 1, 
                 borderStyle: 'solid',
-                borderRadius: (theme) => theme.shape.borderRadius
+                borderRadius: (theme) => theme.shape.borderRadius,
+                flexDirection: 'column'
             }}
         >
             {children}

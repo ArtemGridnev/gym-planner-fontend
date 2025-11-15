@@ -23,12 +23,30 @@ export default function useFormState(initialValues: Record<string, string>) {
         }
     };
 
+    const setFormData = (data: Record<string, string>) => {
+        const currData = { ...form };
+
+        Object.keys(currData).forEach(key => {
+            currData[key] = data[key];
+        });
+
+        setForm(currData);
+    };
+
+    const cleanForm = () => {
+        setForm(initialValues);
+        setErrors({});
+        setTouched({});
+    };
+
     return ({
         form,
         errors,
         touched,
         handleChange,
         handleError,
-        handleBlur
+        handleBlur,
+        setFormData,
+        cleanForm
     });
 }

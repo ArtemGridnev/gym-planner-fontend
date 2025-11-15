@@ -1,35 +1,55 @@
+import { getExercisesCategoriesList } from '../services/exercisesService';
+import type { ExerciseCategory } from '../types/exerciseCategory';
 import type { FormFieldSchema } from '../types/formFieldSchema';
+import { maxLength } from '../utils/validation';
 
-export const registerFormFields: FormFieldSchema[] = [
+export const exerciseFormFields: FormFieldSchema[] = [
     {
-        label: "First name",
-        name: "firstName",
+        label: "Category",
+        name: "categoryId",
+        type: "searchSelect",
+        required: true,
+        options: getExercisesCategoriesList().then(categories =>
+            categories.map((category: ExerciseCategory) => ({ id: category.id, label: category.name }))
+        )
+    },
+    {
+        label: "Name",
+        name: "name",
         type: "text",
         required: true,
-        validators: []
+        validators: [
+            { fn: maxLength(50), message: "Name have to be less that 50 chars." }
+        ]
     },
     {
-        label: "Last name",
-        name: "lastName",
-        type: "text",
-        required: true
+        label: "Weight",
+        name: "weight",
+        type: "number",
+        decimals: 3,
+        unit: 'kg'
     },
     {
-        label: "Email",
-        name: "email",
-        type: "email",
-        required: true
+        label: "Reps",
+        name: "reps",
+        type: "number"
     },
     {
-        label: "Password",
-        name: "password",
-        type: "password",
-        required: true
+        label: "Sets",
+        name: "sets",
+        type: "number"
     },
     {
-        label: "Validate Password",
-        name: "validatePassword",
-        type: "password",
-        required: true
+        label: "Duration Seconds",
+        name: "durationSeconds",
+        type: "number"
+    },
+    {
+        label: "Description",
+        name: "description",
+        type: "textarea",
+        validators: [
+            { fn: maxLength(500), message: "Description have to be less that 500 chars." }
+        ]
     }
 ];

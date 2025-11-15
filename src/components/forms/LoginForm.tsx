@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import useLogin from "../../hooks/useLogin";
+import useLogin from "../../hooks/Auth/useLogin";
 import Alerts from "../Alerts";
 import { useEffect } from "react";
 import Form from "../form/Form";
@@ -25,10 +25,7 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
     return (
         <>
             <Alerts success={success} error={error} />
-            <Typography variant="h5" component="h1" gutterBottom>
-                Sign in
-            </Typography>
-            <Box sx={{mt: 2}}>
+            <Box>
                 <Form formFields={formFields} {...formState} submitButtonText="Sign in" onSubmit={handleSubmit} loading={loading} />
             </Box>
         </>
