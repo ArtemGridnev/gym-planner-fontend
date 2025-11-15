@@ -8,6 +8,7 @@ import useExercises from "../../../hooks/Exercises/useExercises";
 import Modal from "../../../components/modal/Modal";
 import { useEffect, useState } from "react";
 import ExerciseForm from "../../../components/forms/ExerciseForm";
+import type { Exercise } from "../../../types/exercise";
 
 const columns: DataCardListColumnProps[] = [
     { field: 'description', fullWidth: true },
@@ -18,14 +19,22 @@ const columns: DataCardListColumnProps[] = [
 ];
 
 export default function Exercises() {
-    const { exercises, loading, error, fetchExercises, deleteExercise } = useExercises();
+    const { 
+        exercises, 
+        loading, 
+        error, 
+        addExercise,
+        updateExercise,
+        deleteExercise
+    } = useExercises();
     const [rows, setRows] = useState<DataCardListRowProps[]>([]);
     const [exerciseId, setExerciseId] = useState<number | null>(null);
-
     const [formOpen, setFormOpen] = useState(false);
 
     useEffect(() => {
         if (exercises) {
+            console.log('exercises', exercises);
+
             setRows(exercises?.map(exercise => ({
                 icon: FitnessCenterOutlined,
                 title: `${exercise.name} - ${exercise.category.name}`,
@@ -34,8 +43,8 @@ export default function Exercises() {
                     description: exercise.description,
                     sets: exercise.sets,
                     reps: exercise.reps,
-                    durationSeconds: exercise.durationSeconds,
-                    weight: exercise.weight
+                    durationSeconds: exercise.durationSeconds && `${exercise.durationSeconds} sec`,
+                    weight: exercise.weight && `${exercise.weight} kg`
                 },
                 menuItems: [
                     { 
@@ -52,7 +61,17 @@ export default function Exercises() {
         } else {
             setRows([]);
         }
-    }, [exercises])
+    }, [exercises]);
+
+    const onFormSubmit = (exercise: Exercise) => {
+        setFormOpen(false); 
+        
+        if (exerciseId) {
+            updateExercise(exercise);
+        } else {
+            addExercise(exercise);
+        }
+    };
 
     return (
         <>
@@ -64,10 +83,7 @@ export default function Exercises() {
             >
                 <Box sx={{ p: '0.75rem' }}>
                     <ExerciseForm 
-                        onSuccess={() => {
-                            setFormOpen(false); 
-                            fetchExercises();
-                        }} 
+                        onSuccess={onFormSubmit} 
                         exerciseId={exerciseId}
                     />
                 </Box>

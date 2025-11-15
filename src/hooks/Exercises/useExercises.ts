@@ -22,20 +22,27 @@ export default function useExercises() {
         }
     };
 
+    const addExercise = (exercise: Exercise) => {
+        setExercises(prev => prev ? [exercise, ...prev] : [exercise]);
+    };
+
+    const updateExercise = (exercise: Exercise) => {
+        setExercises(prev => 
+            prev?.map(e => e.id === exercise.id ? exercise : e) || prev
+        );
+    };
+
     const deleteExercise = async (id: number) => {
+        const oldExercises = exercises;
+        setExercises(prev => prev?.filter(exercise => exercise.id !== id) || prev);
+
         try {
-            setLoading(true);
-
             await serviceDeleteExercise(id);
-
-            if (exercises) {
-                setExercises(exercises?.filter(exercise => exercise.id !== id));
-            }
         } catch (err: any) {
             console.error(err);
             setError(err.message || "Exercise delete failed");
-        } finally {
-            setLoading(false);
+
+            setExercises(oldExercises);
         }
     };
 
@@ -48,6 +55,8 @@ export default function useExercises() {
         exercises,
         error,
         fetchExercises,
+        addExercise,
+        updateExercise,
         deleteExercise
     };
 }

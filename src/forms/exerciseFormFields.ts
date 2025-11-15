@@ -42,7 +42,8 @@ export const exerciseFormFields: FormFieldSchema[] = [
     {
         label: "Duration Seconds",
         name: "durationSeconds",
-        type: "number"
+        type: "number",
+        unit: 'sec'
     },
     {
         label: "Description",

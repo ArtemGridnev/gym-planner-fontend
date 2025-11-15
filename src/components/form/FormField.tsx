@@ -99,7 +99,7 @@ export default function FormField(props: FormFieldProps) {
                     helperText={error}
                     {...(type === "textarea" ? {
                         multiline: true,
-                        rows: 4.5,
+                        minRows: 4.5,
                         maxRows: 6
                     } : {})}
                 ></TextField>

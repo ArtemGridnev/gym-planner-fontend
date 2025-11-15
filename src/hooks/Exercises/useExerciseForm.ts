@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { exerciseFormFields as formFields } from "../../forms/exerciseFormFields";
 import useForm from "../Form/useForm";
 import { getExercise, postExercise, updateExercise } from "../../services/exercisesService";
+import type { Exercise } from "../../types/exercise";
 
 export default function useExercisesForm(exerciseId: number | null = null) {
     const [loading, setLoading] = useState(false);
@@ -10,28 +11,26 @@ export default function useExercisesForm(exerciseId: number | null = null) {
 
     const {
         formState,
-        submitForm,
+        submitForm: useFromSubmit,
         fillFormFields,
         cleanFormFields
     } = useForm(formFields);
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-
+    const submitForm = async (): Promise<Exercise | null> => {
         setLoading(true);
         setSuccess(null);
         setError(null);
 
         try {
-            const form = submitForm();
+            const form = useFromSubmit();
     
             if (!form) {
                 setLoading(false);
-                return;
+                return null;
             }
 
             if (exerciseId) {
-                await updateExercise(exerciseId, {
+                const exercise = await updateExercise(exerciseId, {
                     categoryId: form.categoryId!,
                     name: form.name!,
                     description: form.description,
@@ -42,8 +41,10 @@ export default function useExercisesForm(exerciseId: number | null = null) {
                 });
 
                 setSuccess('Exercise updated successfully!');
+
+                return exercise;
             } else {
-                await postExercise({
+                const exercise = await postExercise({
                     categoryId: form.categoryId!,
                     name: form.name!,
                     description: form.description,
@@ -54,9 +55,12 @@ export default function useExercisesForm(exerciseId: number | null = null) {
                 });
 
                 setSuccess('New exercise created successfully!');
+
+                return exercise;
             }
         } catch (err: any) {
             setError(err.message || "Exercise creation failed");
+            return null;
         } finally {
             setLoading(false);
         }
@@ -86,6 +90,6 @@ export default function useExercisesForm(exerciseId: number | null = null) {
         loading,
         success,
         error,
-        handleSubmit
+        submitForm
     });
 }
