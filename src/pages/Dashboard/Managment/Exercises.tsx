@@ -94,6 +94,7 @@ export default function Exercises() {
                         {
                             icon: AddOutlined,
                             label: 'Create Exercise',
+                            tooltip: 'Create Exercise', 
                             onClick: () => {
                                 setExerciseId(null);
                                 setFormOpen(true);
