@@ -3,24 +3,24 @@ import { useEffect, useState } from "react";
 import type { SelectOption } from "../../types/formFieldSchema";
 
 type PasswordFieldProps = TextFieldProps & {
-    options: SelectOption[] | Promise<SelectOption[]>
+    options: SelectOption[] | (() => Promise<SelectOption[]>);
 };
 
 export default function Select({ options, ...props }: PasswordFieldProps) {
-    const [selectOptions, setSelectOptions] = useState<SelectOption[] | null>();
+    const [selectOptions, setSelectOptions] = useState<SelectOption[]>([]);
 
-    const fetchOptions = async (promise: Promise<SelectOption[]>) => {
-        const options = await promise;
+    const fetchOptions = async (fun: (() => Promise<SelectOption[]>)) => {
+        const options = await fun();
         setSelectOptions(options);
     };
 
     useEffect(() => {
-        if (options instanceof Promise) {
+        if (options instanceof Function) {
             fetchOptions(options);
         } else {
             setSelectOptions(options);
         }
-    }, []);
+    }, [options]);
 
     return (
         <TextField

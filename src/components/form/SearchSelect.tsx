@@ -2,12 +2,12 @@ import { Autocomplete, TextField, type TextFieldProps } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import type { SearchSelectOption } from "../../types/formFieldSchema";
 
-type PasswordFieldProps = Omit<TextFieldProps, 'onChange'> & {
-    options: SearchSelectOption[] | Promise<SearchSelectOption[]>,
+type SearchSelectProps = Omit<TextFieldProps, 'onChange'> & {
+    options: SearchSelectOption[] | (() => Promise<SearchSelectOption[]>);
     onChange: (selectedOption: SearchSelectOption | null) => void,
 };
 
-export default function SearchSelect({ options, onChange, value, ...props }: PasswordFieldProps) {
+export default function SearchSelect({ options, onChange, value, ...props }: SearchSelectProps) {
     const [selectOptions, setSelectOptions] = useState<SearchSelectOption[]>([]);
 
     const selectOptionsMap = useMemo(() => {
@@ -20,13 +20,14 @@ export default function SearchSelect({ options, onChange, value, ...props }: Pas
         return map;
     }, [selectOptions])
 
-    const fetchOptions = async (promise: Promise<SearchSelectOption[]>) => {
-        const options = await promise;
+    const fetchOptions = async (fun: () => Promise<SearchSelectOption[]>) => {
+        const options = await fun();
+
         setSelectOptions(options);
     };
 
     useEffect(() => {
-        if (options instanceof Promise) {
+        if (options instanceof Function) {
             fetchOptions(options);
         } else {
             setSelectOptions(options);
@@ -37,7 +38,7 @@ export default function SearchSelect({ options, onChange, value, ...props }: Pas
         <Autocomplete
             disablePortal
             options={selectOptions}
-            onChange={(event, option) => {
+            onChange={(e, option) => {
                 onChange(option || null);
             }}
             value={selectOptionsMap.get(value) ?? null}

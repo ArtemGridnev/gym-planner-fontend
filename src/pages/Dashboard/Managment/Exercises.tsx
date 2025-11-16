@@ -33,8 +33,6 @@ export default function Exercises() {
 
     useEffect(() => {
         if (exercises) {
-            console.log('exercises', exercises);
-
             setRows(exercises?.map(exercise => ({
                 icon: FitnessCenterOutlined,
                 title: `${exercise.name} - ${exercise.category.name}`,

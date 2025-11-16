@@ -1,7 +1,6 @@
 import { Box } from "@mui/material";
 import Form from "../form/Form";
 import Alerts from "../Alerts";
-import { useEffect } from "react";
 import useExercisesForm from "../../hooks/Exercises/useExerciseForm";
 import type { Exercise } from "../../types/exercise";
 

@@ -9,7 +9,7 @@ export const exerciseFormFields: FormFieldSchema[] = [
         name: "categoryId",
         type: "searchSelect",
         required: true,
-        options: getExercisesCategoriesList().then(categories =>
+        options: () => getExercisesCategoriesList().then(categories =>
             categories.map((category: ExerciseCategory) => ({ id: category.id, label: category.name }))
         )
     },

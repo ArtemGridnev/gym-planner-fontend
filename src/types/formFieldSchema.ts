@@ -39,12 +39,12 @@ type NumberField = BaseField & {
 
 type SelectField = BaseField & {
     type: "select";
-    options: SelectOption[] | Promise<SelectOption[]>;
+    options: SelectOption[] | (() => Promise<SelectOption[]>);
 }
 
 type SearchSelectField = BaseField & {
     type: "searchSelect";
-    options: SearchSelectOption[] | Promise<SearchSelectOption[]>;
+    options: SearchSelectOption[] | (() => Promise<SearchSelectOption[]>);
 }
 
 export type FormFieldSchema = TextField | SelectField | SearchSelectField | NumberField;
