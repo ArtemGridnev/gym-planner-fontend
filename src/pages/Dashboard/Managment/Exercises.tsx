@@ -74,7 +74,7 @@ export default function Exercises() {
     return (
         <>
             <Modal 
-                title="Create exercise"
+                title={exerciseId ? "Update Exercise" : "Create exercise"}
                 open={formOpen} 
                 onClose={() => setFormOpen(false)} 
                 width="30rem"
@@ -94,6 +94,7 @@ export default function Exercises() {
                         {
                             icon: AddOutlined,
                             label: 'Create Exercise',
+                            tooltip: 'Create Exercise', 
                             onClick: () => {
                                 setExerciseId(null);
                                 setFormOpen(true);

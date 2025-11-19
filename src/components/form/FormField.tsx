@@ -4,6 +4,7 @@ import type { FormFieldSchema } from "../../types/formFieldSchema";
 import Select from "./Select";
 import SearchSelect from "./SearchSelect";
 import NumberField from "./NumberField";
+import CronField from "./CronField";
 
 export type FormFieldProps = FormFieldSchema & {
     value: string;
@@ -82,6 +83,15 @@ export default function FormField(props: FormFieldProps) {
                   error={!!error}
                   helperText={error}
                 />
+            );
+
+        case 'cron':
+            return (
+                <CronField 
+                    fields={props.fields}
+                    onChange={(cron) => onChange(name, cron)}
+                    value={value}
+                 />
             );
 
         default:

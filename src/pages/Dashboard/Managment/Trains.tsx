@@ -1,62 +1,125 @@
-import { Box, IconButton, Typography } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 import Card from "../../../components/dashboard/content/card/Card";
 import CardHeader from "../../../components/dashboard/content/card/CardHeader";
-import { AddOutlined, DeleteOutline, EditOutlined } from "@mui/icons-material";
+import { AddOutlined, DeleteOutline, EditOutlined, SportsMartialArtsOutlined } from "@mui/icons-material";
 import CardContent from "../../../components/dashboard/content/card/CardContent";
 import { useEffect, useState } from "react";
-import { getTrainsList } from "../../../services/trainsService";
+import type { DataCardListColumnProps, DataCardListRowProps } from "../../../components/dataCardList/DataCardList";
+import useTrains from "../../../hooks/Trains/useTrains";
+import DataCardList from "../../../components/dataCardList/DataCardList";
+import Modal from "../../../components/modal/Modal";
 import type { Train } from "../../../types/train";
-import DataCard from "../../../components/dataCardList/DataCard";
-import type { MenuItemProps } from "../../../components/menu/MenuItem";
+import TrainForm from "../../../components/forms/TrainFrom";
 
-export default function Trains() {
-    const [ loading, setLoading ] = useState(true);
-    const [ trains, setTrains ] = useState<Train[] | null>(null);
-    
-    const fetchTrains = async () => {
-        try {
-            const data = await getTrainsList();
-
-            setTrains(data)
-        } catch (err: any) {
-            console.error(err.message || "Trains fetch failed");
-        }
-        
-        setLoading(false);
+function cronToDays(cron: string): string {
+    const days: Record<string, string> = {
+        '0': 'Sun',
+        '1': 'Mon',
+        '2': 'Tue',
+        '3': 'Wed',
+        '4': 'Thu',
+        '5': 'Fri',
+        '6': 'Sat'
     };
 
-    useEffect(() => {
-        fetchTrains();
-    }, []);
+    const parts = cron?.trim()?.split(' ');
+        
+    const weekDaysKeys = parts[4]?.replaceAll('*', '').split(',') || [];
 
-    const itemMenuItems: MenuItemProps[] = [
-        {
-            icon: EditOutlined,
-            text: 'edit',
-            onClick: () => console.log('click')
-        },
-        {
-            icon: DeleteOutline,
-            text: 'delete',
-            onClick: () => console.log('click')
+    return weekDaysKeys.map((key) => days[key]).join(', ');
+}
+
+const columns: DataCardListColumnProps[] = [
+    { field: 'weekDays', name: 'Recurrence Days', fullWidth: true }
+];
+
+export default function Trains() {
+    const { 
+        trains, 
+        loading, 
+        error, 
+        addTrain,
+        updateTrain,
+        deleteTrain
+    } = useTrains();
+    const [rows, setRows] = useState<DataCardListRowProps[]>([]);
+    const [trainId, setTrainId] = useState<number | null>(null);
+    const [formOpen, setFormOpen] = useState(false);
+
+    useEffect(() => {
+        if (trains) {
+            setRows(trains?.map(train => ({
+                icon: SportsMartialArtsOutlined,
+                title: train.name,
+                data: {
+                    weekDays: cronToDays(train.recurrenceCron)
+                },
+                menuItems: [
+                    { 
+                        icon: EditOutlined, 
+                        text: 'edit', 
+                        onClick: () => {
+                            setTrainId(train.id); 
+                            setFormOpen(true);
+                        }  
+                    },
+                    { icon: DeleteOutline, text: 'delete', onClick: () => deleteTrain(train.id) },
+                ]
+            })));
+        } else {
+            setRows([]);
         }
-    ];
+    }, [trains]);
+
+    const onFormSubmit = (train: Train) => {
+        setFormOpen(false); 
+        
+        if (trainId) {
+            updateTrain(train);
+        } else {
+            addTrain(train);
+        }
+    };
 
     return (
-        <Card>
-            <CardHeader>
-                <Typography variant="h1" sx={{ fontSize: '1.5rem' }}>Trainings</Typography>
-                <IconButton sx={{ marginInlineStart: 'auto' }}>
-                    <AddOutlined />
-                </IconButton>
-            </CardHeader>
-            <CardContent>
-                <Box sx={{ padding: '1rem' }}>
-                    {trains && trains.map(train => (
-                        <DataCard title={train.name} icon={AddOutlined} menuItems={itemMenuItems}></DataCard>
-                    ))}
+        <>
+            <Modal 
+                title="Create exercise"
+                open={formOpen} 
+                onClose={() => setFormOpen(false)} 
+                width="30rem"
+            >
+                <Box sx={{ p: '0.75rem' }}>
+                    <TrainForm 
+                        onSuccess={onFormSubmit} 
+                        trainId={trainId}
+                    />
                 </Box>
-            </CardContent>
-        </Card>
+            </Modal>
+
+            <Card>
+                <CardHeader 
+                    title="Trainings"
+                    actions={[
+                        {
+                            icon: AddOutlined,
+                            label: 'Create Train',
+                            tooltip: 'Create Train',
+                            onClick: () => {
+                                setTrainId(null);
+                                setFormOpen(true);
+                            }
+                        }
+                    ]}
+                />
+                <CardContent>
+                    <Box sx={{ padding: '1rem' }}>
+                        {loading && <CircularProgress size={20} color="inherit" />}
+                        {error && <Box>{error}</Box>}
+                        {trains && !loading && <DataCardList columns={columns} rows={rows} />}
+                    </Box>
+                </CardContent>
+            </Card>
+        </>
     );
 }

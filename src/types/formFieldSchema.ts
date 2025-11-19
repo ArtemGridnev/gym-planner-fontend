@@ -47,5 +47,10 @@ type SearchSelectField = BaseField & {
     options: SearchSelectOption[] | (() => Promise<SearchSelectOption[]>);
 }
 
-export type FormFieldSchema = TextField | SelectField | SearchSelectField | NumberField;
+type CronField = BaseField & {
+    type: "cron";
+    fields: ('weekDays')[];
+}
+
+export type FormFieldSchema = TextField | SelectField | SearchSelectField | NumberField | CronField;
 

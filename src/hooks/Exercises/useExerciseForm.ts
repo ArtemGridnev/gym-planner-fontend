@@ -4,7 +4,7 @@ import useForm from "../Form/useForm";
 import { getExercise, postExercise, updateExercise } from "../../services/exercisesService";
 import type { Exercise } from "../../types/exercise";
 
-export default function useExercisesForm(exerciseId: number | null = null) {
+export default function useExerciseForm(exerciseId: number | null = null) {
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
