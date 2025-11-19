@@ -7,13 +7,30 @@ import { useEffect, useState } from "react";
 import type { DataCardListColumnProps, DataCardListRowProps } from "../../../components/dataCardList/DataCardList";
 import useTrains from "../../../hooks/Trains/useTrains";
 import DataCardList from "../../../components/dataCardList/DataCardList";
+import Modal from "../../../components/modal/Modal";
+import type { Train } from "../../../types/train";
+import TrainForm from "../../../components/forms/TrainFrom";
+
+function cronToDays(cron: string): string {
+    const days: Record<string, string> = {
+        '0': 'Sun',
+        '1': 'Mon',
+        '2': 'Tue',
+        '3': 'Wed',
+        '4': 'Thu',
+        '5': 'Fri',
+        '6': 'Sat'
+    };
+
+    const parts = cron?.trim()?.split(' ');
+        
+    const weekDaysKeys = parts[4]?.replaceAll('*', '').split(',') || [];
+
+    return weekDaysKeys.map((key) => days[key]).join(', ');
+}
 
 const columns: DataCardListColumnProps[] = [
-    { field: 'description', fullWidth: true },
-    { field: 'weight', name: 'Weight' },
-    { field: 'sets', name: 'Sets' },
-    { field: 'reps', name: 'Reps' },
-    { field: 'durationSeconds', name: 'Duration Seconds' },
+    { field: 'weekDays', name: 'Recurrence Days', fullWidth: true }
 ];
 
 export default function Trains() {
@@ -34,7 +51,9 @@ export default function Trains() {
             setRows(trains?.map(train => ({
                 icon: SportsMartialArtsOutlined,
                 title: train.name,
-                data: {},
+                data: {
+                    weekDays: cronToDays(train.recurrenceCron)
+                },
                 menuItems: [
                     { 
                         icon: EditOutlined, 
@@ -52,26 +71,55 @@ export default function Trains() {
         }
     }, [trains]);
 
+    const onFormSubmit = (train: Train) => {
+        setFormOpen(false); 
+        
+        if (trainId) {
+            updateTrain(train);
+        } else {
+            addTrain(train);
+        }
+    };
+
     return (
-        <Card>
-            <CardHeader 
-                title="Trainings"
-                actions={[
-                    {
-                        icon: AddOutlined,
-                        label: 'Create Train',
-                        tooltip: 'Create Train',
-                        onClick: () => console.log('click')
-                    }
-                ]}
-            />
-            <CardContent>
-                <Box sx={{ padding: '1rem' }}>
-                    {loading && <CircularProgress size={20} color="inherit" />}
-                    {error && <Box>{error}</Box>}
-                    {trains && !loading && <DataCardList columns={columns} rows={rows} />}
+        <>
+            <Modal 
+                title="Create exercise"
+                open={formOpen} 
+                onClose={() => setFormOpen(false)} 
+                width="30rem"
+            >
+                <Box sx={{ p: '0.75rem' }}>
+                    <TrainForm 
+                        onSuccess={onFormSubmit} 
+                        trainId={trainId}
+                    />
                 </Box>
-            </CardContent>
-        </Card>
+            </Modal>
+
+            <Card>
+                <CardHeader 
+                    title="Trainings"
+                    actions={[
+                        {
+                            icon: AddOutlined,
+                            label: 'Create Train',
+                            tooltip: 'Create Train',
+                            onClick: () => {
+                                setTrainId(null);
+                                setFormOpen(true);
+                            }
+                        }
+                    ]}
+                />
+                <CardContent>
+                    <Box sx={{ padding: '1rem' }}>
+                        {loading && <CircularProgress size={20} color="inherit" />}
+                        {error && <Box>{error}</Box>}
+                        {trains && !loading && <DataCardList columns={columns} rows={rows} />}
+                    </Box>
+                </CardContent>
+            </Card>
+        </>
     );
 }

@@ -1,15 +1,15 @@
 import { Box } from "@mui/material";
 import Form from "../form/Form";
 import Alerts from "../Alerts";
-import useExerciseForm from "../../hooks/Exercises/useExerciseForm";
-import type { Exercise } from "../../types/exercise";
+import type { Train } from "../../types/train";
+import useTrainForm from "../../hooks/Trains/useTrainForm";
 
-type ExerciseFormProps = {
-    onSuccess: (exercise: Exercise) => void;
-    exerciseId?: number | null;
+type TrainFormProps = {
+    onSuccess: (train: Train) => void;
+    trainId?: number | null;
 };
 
-export default function ExerciseForm({ onSuccess, exerciseId }: ExerciseFormProps) {
+export default function TrainForm({ onSuccess, trainId }: TrainFormProps) {
     const {
         formFields,
         formState,
@@ -17,15 +17,15 @@ export default function ExerciseForm({ onSuccess, exerciseId }: ExerciseFormProp
         error,
         loading,
         submitForm
-    } = useExerciseForm(exerciseId);
+    } = useTrainForm(trainId);
 
     const submitHandler = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        const exercise = await submitForm();
+        const train = await submitForm();
 
-        if (exercise) {
-            onSuccess(exercise);
+        if (train) {
+            onSuccess(train);
         }
     };
 
@@ -36,7 +36,7 @@ export default function ExerciseForm({ onSuccess, exerciseId }: ExerciseFormProp
                 <Form 
                     formFields={formFields} 
                     {...formState} 
-                    submitButtonText={exerciseId ? "Update Exercise" : "Create Exercise"} 
+                    submitButtonText={trainId ? "Update Train" : "Create Train"} 
                     onSubmit={submitHandler} 
                     loading={loading} 
                 />

@@ -74,7 +74,7 @@ export default function Exercises() {
     return (
         <>
             <Modal 
-                title="Create exercise"
+                title={exerciseId ? "Update Exercise" : "Create exercise"}
                 open={formOpen} 
                 onClose={() => setFormOpen(false)} 
                 width="30rem"
