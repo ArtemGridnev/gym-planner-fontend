@@ -9,6 +9,7 @@ import ProtectedRoute from './components/routes/ProtectedRoute'
 import PublicRoute from './components/routes/PublicRoute'
 import Trains from './pages/Dashboard/Managment/Trains'
 import TrainSessions from './pages/Dashboard/TrainSessions'
+import Train from './pages/Dashboard/Managment/Train'
 
 function App() {
   return (
@@ -28,7 +29,10 @@ function App() {
           <Route element={<Dashboard />}>
             <Route path="/managment">
               <Route path="/managment/exercises" element={<Exercises />} />
-              <Route path="/managment/trains" element={<Trains />} />
+              <Route path="/managment/trains">
+                <Route index element={<Trains />} />
+                <Route path="/managment/trains/:id" element={<Train />} />
+              </Route>
             </Route>
             <Route path="/train-sessions" element={<TrainSessions />} />
           </Route>

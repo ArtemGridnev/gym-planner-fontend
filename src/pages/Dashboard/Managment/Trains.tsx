@@ -10,6 +10,7 @@ import DataCardList from "../../../components/dataCardList/DataCardList";
 import Modal from "../../../components/modal/Modal";
 import type { Train } from "../../../types/train";
 import TrainForm from "../../../components/forms/TrainFrom";
+import { useNavigate } from "react-router-dom";
 
 function cronToDays(cron: string): string {
     const days: Record<string, string> = {
@@ -34,6 +35,7 @@ const columns: DataCardListColumnProps[] = [
 ];
 
 export default function Trains() {
+    const navigate = useNavigate();
     const { 
         trains, 
         loading, 
@@ -64,7 +66,8 @@ export default function Trains() {
                         }  
                     },
                     { icon: DeleteOutline, text: 'delete', onClick: () => deleteTrain(train.id) },
-                ]
+                ],
+                onClick: () => navigate(`/managment/trains/${train.id}`)
             })));
         } else {
             setRows([]);
@@ -114,7 +117,7 @@ export default function Trains() {
                 />
                 <CardContent>
                     <Box sx={{ padding: '1rem' }}>
-                        {loading && <CircularProgress size={20} color="inherit" />}
+                        {loading && <CircularProgress size={25} color="inherit" sx={{ display: 'block', margin: 'auto' }} />}
                         {error && <Box>{error}</Box>}
                         {trains && !loading && <DataCardList columns={columns} rows={rows} />}
                     </Box>

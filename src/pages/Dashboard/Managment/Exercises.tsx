@@ -104,7 +104,7 @@ export default function Exercises() {
                 />
                 <CardContent>
                     <Box sx={{ padding: '1rem' }}>
-                        {loading && <CircularProgress size={20} color="inherit" />}
+                        {loading && <CircularProgress size={25} color="inherit" sx={{ display: 'block', margin: 'auto' }} />}
                         {error && <Box>{error}</Box>}
                         {exercises && !loading && <DataCardList columns={columns} rows={rows} />}
                     </Box>
