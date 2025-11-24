@@ -4,4 +4,4 @@ export interface TrainExercise {
     id: number;
     exercise: Exercise;
     orderIndex: number;
-}
+};

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Train } from "../../types/train";
 import { getTrain } from "../../services/trainsService";
-import type { TrainExercise } from "../../types/trainExercise";
+import { updateTrainExercises as serviceUpdateTrainExercises, type TrainExerciseUpdate } from "../../services/trainExercisesService";
 
 export default function useTrain(id: number) {
     const [loading, setLoading] = useState(false);
@@ -25,6 +25,17 @@ export default function useTrain(id: number) {
         }
     };
 
+    const updateTrainExercises = async (trainExercises: TrainExerciseUpdate[]) => {
+        try {
+            await serviceUpdateTrainExercises(id, {
+                exercises: trainExercises
+            });
+        } catch (err: any) {
+            console.error(err);
+            setError(err.message || "Train exercises update failed");
+        }
+    };
+
     useEffect(() => {
         fetchTrain();
     }, []);
@@ -33,6 +44,7 @@ export default function useTrain(id: number) {
         loading,
         train,
         error,
-        fetchTrain
+        fetchTrain,
+        updateTrainExercises
     }
 };

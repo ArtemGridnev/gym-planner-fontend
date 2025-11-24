@@ -10,7 +10,7 @@ export type DataCardProps = {
     children?: React.ReactNode;
     menuItems?: MenuItemProps[];
     onClick?: () => void;
-}
+};
 
 export default function DataCard({ icon: Icon, title, children, menuItems, onClick }: DataCardProps) {
     return (

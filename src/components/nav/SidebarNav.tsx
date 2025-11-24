@@ -4,7 +4,7 @@ import SidebarNavItem from "./SidebarNavItem";
 
 type SidebarNavProps = {
     items: SidebarNavItemProps[];
-}
+};
 
 export default function SidebarNav({ items }: SidebarNavProps) {
     return (

@@ -5,4 +5,4 @@ export interface Train {
     recurrenceCron: string;
     name: string;
     exercises?: TrainExercise[];
-}
+};

@@ -9,4 +9,4 @@ export interface Exercise {
     reps: number | null;
     durationSeconds: number | null;
     weight: number | null;
-}
+};

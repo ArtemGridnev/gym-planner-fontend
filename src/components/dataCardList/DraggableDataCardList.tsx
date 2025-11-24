@@ -1,58 +1,38 @@
-import { useEffect, useState } from "react";
-import { DndContext, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors } from "@dnd-kit/core";
-import { SortableContext, arrayMove, sortableKeyboardCoordinates, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { SortableContext, arrayMove, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { SortableItem } from "../dnd/SortableItem";
-import type { DataCardListColumnProps, DataCardListProps, DataCardListRowProps } from "./DataCardList";
+import type { DataCardListColumnProps, DataCardListRowProps } from "./DataCardList";
 import DataCardListItem from "./DataCardListItem";
 import { Box } from "@mui/material";
+import DndProvider from "../dnd/DndProvider";
 
 export type DraggableDataCardListRowProps = DataCardListRowProps & {
     id: string
-}
+};
 
 type DraggableDataCardListProps = {
     columns: DataCardListColumnProps[];
     rows: DraggableDataCardListRowProps[];
-}
+    onChange: (rows: DraggableDataCardListRowProps[]) => void;
+};
 
-export default function DraggableDataCardList({ columns, rows }: DraggableDataCardListProps) {
-    const [items, setItems] = useState<DraggableDataCardListRowProps[]>([]);
-    const sensors = useSensors(
-        useSensor(PointerSensor),
-        useSensor(KeyboardSensor, {
-            coordinateGetter: sortableKeyboardCoordinates,
-        })
-    );
-
+export default function DraggableDataCardList({ columns, rows, onChange }: DraggableDataCardListProps) {
     const handleDragEnd = (event: any) => {
         const {active, over} = event;
         
         if (active.id !== over.id) {
-            setItems((items) => {
-                const oldIndex = items.findIndex(item => item.id === active.id);
-                const newIndex = items.findIndex(item => item.id === over.id);
-                
-                return arrayMove(items, oldIndex, newIndex);
-            });
+            const oldIndex = rows.findIndex(row => row.id === active.id);
+            const newIndex = rows.findIndex(row => row.id === over.id);
+
+            const orderedRows = arrayMove(rows, oldIndex, newIndex);
+
+            onChange(orderedRows);
         }
-    }
-
-    useEffect(() => {
-        setItems(rows);
-    }, [rows]);
-
-    useEffect(() => {
-        console.log('items', items);
-    }, [items]);
+    };
 
     return (
-        <DndContext 
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-        >
+        <DndProvider onDragEnd={handleDragEnd}>
             <SortableContext
-                items={items}
+                items={rows}
                 strategy={verticalListSortingStrategy}
             >
                 <Box
@@ -62,13 +42,13 @@ export default function DraggableDataCardList({ columns, rows }: DraggableDataCa
                         flexDirection: 'column'
                     }}
                 >
-                    {items.map((row) => (
+                    {rows.map((row) => (
                         <SortableItem key={row.id} id={row.id}>
                             {<DataCardListItem columns={columns} row={row} />}
                         </SortableItem>
                     ))}
                 </Box>
             </SortableContext>
-        </DndContext>
+        </DndProvider>
     );
 }
