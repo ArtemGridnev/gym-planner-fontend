@@ -46,10 +46,6 @@ export default function useExercises() {
         }
     };
 
-    useEffect(() => {
-        fetchExercises();
-    }, []);
-
     return {
         loading,
         exercises,

@@ -11,6 +11,7 @@ import Modal from "../../../components/modal/Modal";
 import type { Train } from "../../../types/train";
 import TrainForm from "../../../components/forms/TrainFrom";
 import { useNavigate } from "react-router-dom";
+import Alerts from "../../../components/Alerts";
 
 function cronToDays(cron: string): string {
     const days: Record<string, string> = {
@@ -40,6 +41,7 @@ export default function Trains() {
         trains, 
         loading, 
         error, 
+        fetchTrains,
         addTrain,
         updateTrain,
         deleteTrain
@@ -47,6 +49,16 @@ export default function Trains() {
     const [rows, setRows] = useState<DataCardListRowProps[]>([]);
     const [trainId, setTrainId] = useState<number | null>(null);
     const [formOpen, setFormOpen] = useState(false);
+
+    const onFormSubmit = (train: Train) => {
+        setFormOpen(false); 
+        
+        if (trainId) {
+            updateTrain(train);
+        } else {
+            addTrain(train);
+        }
+    };
 
     useEffect(() => {
         if (trains) {
@@ -74,30 +86,26 @@ export default function Trains() {
         }
     }, [trains]);
 
-    const onFormSubmit = (train: Train) => {
-        setFormOpen(false); 
-        
-        if (trainId) {
-            updateTrain(train);
-        } else {
-            addTrain(train);
-        }
-    };
+    useEffect(() => {
+        fetchTrains();
+    }, []);
 
     return (
         <>
             <Modal 
-                title="Create exercise"
                 open={formOpen} 
                 onClose={() => setFormOpen(false)} 
                 width="30rem"
             >
-                <Box sx={{ p: '0.75rem' }}>
-                    <TrainForm 
-                        onSuccess={onFormSubmit} 
-                        trainId={trainId}
-                    />
-                </Box>
+                <Modal.Header>{trainId ? "Update Train" : "Create Train"}</Modal.Header>
+                <Modal.Content>
+                    <Box sx={{ p: '0.75rem' }}>
+                        <TrainForm 
+                            onSuccess={onFormSubmit} 
+                            trainId={trainId}
+                        />
+                    </Box>
+                </Modal.Content>
             </Modal>
 
             <Card>
@@ -118,7 +126,7 @@ export default function Trains() {
                 <CardContent>
                     <Box sx={{ padding: '1rem' }}>
                         {loading && <CircularProgress size={25} color="inherit" sx={{ display: 'block', margin: 'auto' }} />}
-                        {error && <Box>{error}</Box>}
+                        {error && <Alerts error={error} />}
                         {trains && !loading && <DataCardList columns={columns} rows={rows} />}
                     </Box>
                 </CardContent>

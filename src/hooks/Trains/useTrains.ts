@@ -46,10 +46,6 @@ export default function useTrains() {
         }
     };
 
-    useEffect(() => {
-        fetchTrains();
-    }, []);
-
     return {
         loading,
         trains,

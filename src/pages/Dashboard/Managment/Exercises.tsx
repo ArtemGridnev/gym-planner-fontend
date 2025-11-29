@@ -9,6 +9,7 @@ import Modal from "../../../components/modal/Modal";
 import { useEffect, useState } from "react";
 import ExerciseForm from "../../../components/forms/ExerciseForm";
 import type { Exercise } from "../../../types/exercise";
+import Alerts from "../../../components/Alerts";
 
 const columns: DataCardListColumnProps[] = [
     { field: 'description', fullWidth: true },
@@ -23,6 +24,7 @@ export default function Exercises() {
         exercises, 
         loading, 
         error, 
+        fetchExercises,
         addExercise,
         updateExercise,
         deleteExercise
@@ -30,6 +32,16 @@ export default function Exercises() {
     const [rows, setRows] = useState<DataCardListRowProps[]>([]);
     const [exerciseId, setExerciseId] = useState<number | null>(null);
     const [formOpen, setFormOpen] = useState(false);
+
+    const onFormSubmit = (exercise: Exercise) => {
+        setFormOpen(false); 
+        
+        if (exerciseId) {
+            updateExercise(exercise);
+        } else {
+            addExercise(exercise);
+        }
+    };
 
     useEffect(() => {
         if (exercises) {
@@ -61,30 +73,26 @@ export default function Exercises() {
         }
     }, [exercises]);
 
-    const onFormSubmit = (exercise: Exercise) => {
-        setFormOpen(false); 
-        
-        if (exerciseId) {
-            updateExercise(exercise);
-        } else {
-            addExercise(exercise);
-        }
-    };
+    useEffect(() => {
+        fetchExercises();
+    }, []);
 
     return (
         <>
             <Modal 
-                title={exerciseId ? "Update Exercise" : "Create exercise"}
                 open={formOpen} 
                 onClose={() => setFormOpen(false)} 
                 width="30rem"
             >
-                <Box sx={{ p: '0.75rem' }}>
-                    <ExerciseForm 
-                        onSuccess={onFormSubmit} 
-                        exerciseId={exerciseId}
-                    />
-                </Box>
+                <Modal.Header>{exerciseId ? "Update Exercise" : "Create exercise"}</Modal.Header>
+                <Modal.Content>
+                    <Box sx={{ p: '0.75rem' }}>
+                        <ExerciseForm 
+                            onSuccess={onFormSubmit} 
+                            exerciseId={exerciseId}
+                        />
+                    </Box>
+                </Modal.Content>
             </Modal>
 
             <Card>
@@ -105,7 +113,7 @@ export default function Exercises() {
                 <CardContent>
                     <Box sx={{ padding: '1rem' }}>
                         {loading && <CircularProgress size={25} color="inherit" sx={{ display: 'block', margin: 'auto' }} />}
-                        {error && <Box>{error}</Box>}
+                        {error && <Alerts error={error} />}
                         {exercises && !loading && <DataCardList columns={columns} rows={rows} />}
                     </Box>
                 </CardContent>
