@@ -22,7 +22,7 @@ type TrainExercisesUpdateData = {
     exercises: TrainExerciseUpdate[];
 };
 
-export const updateTrainExercises = async (id: number, data: TrainExercisesUpdateData) => {
+export const updateTrainExercises = async (id: number, data: TrainExercisesUpdateData): Promise<(TrainExercise & { tempId?: number })[] | undefined> => {
     try {
         const response = await api.patch(`/trains/${id}/exercises`, data);
         return response.data;

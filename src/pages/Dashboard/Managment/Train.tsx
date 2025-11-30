@@ -10,7 +10,6 @@ import DraggableDataCardList, { type DraggableDataCardListRowProps } from "../..
 import type { DataCardListColumnProps } from "../../../components/dataCardList/DataCardList";
 import { useEffect, useState } from "react";
 import ExercisesSelectPopup from "../../../components/ExercisesSelectPopup";
-import type { Exercise } from "../../../types/exercise";
 import Alerts from "../../../components/Alerts";
 
 const columns: DataCardListColumnProps[] = [
@@ -29,37 +28,35 @@ export default function Train() {
         train,
         error,
         addTrainExercises,
-        updateTrainExercises,
+        updateTrainExercisesOrder,
         deleteTrainExercise
     } = useTrain(+id!);
     const [rows, setRows] = useState<DraggableDataCardListRowProps[]>([]);
     const [formOpen, setFormOpen] = useState(false);
     
-    const renderRow = (id: string, exercise: Exercise) => {
-        return {
-            id,
-            icon: FitnessCenterOutlined,
-            title: `${exercise.name} - ${exercise.category?.name}`,
-            data: {
-                id: exercise.id,
-                description: exercise.description,
-                sets: exercise.sets,
-                reps: exercise.reps,
-                durationSeconds: exercise.durationSeconds && `${exercise.durationSeconds} sec`,
-                weight: exercise.weight && `${exercise.weight} kg`
-            },
-            menuItems: [
-                { icon: DeleteOutline, text: 'delete', onClick: () => deleteTrainExercise(+id) },
-            ]
-        }
-    };
-
     useEffect(() => {
         if (train?.exercises) {
             const trainExercises = train.exercises;
 
             setRows(trainExercises?.map(trainExercise => {
-                return renderRow(trainExercise.id.toString(), trainExercise.exercise);
+                const exercise = trainExercise.exercise;
+
+                return {
+                    id: trainExercise.id.toString(),
+                    icon: FitnessCenterOutlined,
+                    title: `${exercise.name} - ${exercise.category?.name} (${trainExercise.id})`,
+                    data: {
+                        id: exercise.id,
+                        description: exercise.description,
+                        sets: exercise.sets,
+                        reps: exercise.reps,
+                        durationSeconds: exercise.durationSeconds && `${exercise.durationSeconds} sec`,
+                        weight: exercise.weight && `${exercise.weight} kg`
+                    },
+                    menuItems: trainExercise.id > 0 ? [
+                        { icon: DeleteOutline, text: 'delete', onClick: () => deleteTrainExercise(trainExercise.id) },
+                    ] : []
+                };
             }));
         } else {
             setRows([]);
@@ -86,7 +83,6 @@ export default function Train() {
                             label: 'Add Exercises',
                             tooltip: 'Add Exercises',
                             onClick: () => {
-                                // setTrainId(null);
                                 setFormOpen(true);
                             }
                         }
@@ -107,8 +103,7 @@ export default function Train() {
                                     columns={columns} 
                                     rows={rows}
                                     onChange={(orderedRows) => {
-                                        setRows(orderedRows);
-                                        updateTrainExercises(orderedRows.map(row => ({ id: +row.id })))
+                                        updateTrainExercisesOrder(orderedRows.map(row => ({ id: +row.id })))
                                     }}
                                 />
                             </Box>

@@ -3,6 +3,7 @@ import type { Train } from "../../types/train";
 import { getTrain } from "../../services/trainsService";
 import { updateTrainExercises as serviceUpdateTrainExercises, type TrainExerciseUpdate } from "../../services/trainExercisesService";
 import type { Exercise } from "../../types/exercise";
+import type { TrainExercise } from "../../types/trainExercise";
 
 export default function useTrain(id: number) {
     const [loading, setLoading] = useState(false);
@@ -26,23 +27,36 @@ export default function useTrain(id: number) {
         }
     };
 
-    const updateTrainExercises = async (trainExercises: TrainExerciseUpdate[]) => {
+    const updateTrainExercisesOrder = async (newOrder: { id: number }[]) => {
+        if (!train?.exercises) return;
+
+        setError(null);
+
+        const currTrainExercises = train.exercises;
+
+        setTrain(prev => {
+            if (!prev?.exercises) return prev;
+
+            const exercises = prev.exercises;
+
+            const orderedTrainExercises = newOrder.map(o => {
+                return exercises.find(te => te.id === o.id);
+            }).filter(Boolean) as TrainExercise[];
+
+            return {
+                ...prev,
+                exercises: orderedTrainExercises
+            };
+        });
+
         try {
-            const newTrainExercises = await serviceUpdateTrainExercises(id, {
-                exercises: trainExercises
-            });
-
-            setTrain(prev => {
-                if (!prev) return prev;
-
-                return {
-                    ...prev,
-                    exercises: newTrainExercises
-                };
+            await serviceUpdateTrainExercises(id, {
+                exercises: newOrder
             });
         } catch (err: any) {
             console.error(err);
-            setError(err.message || "Train exercises update failed");
+            setError(err.message || "Train exercises order update failed");
+            setTrain(prev => prev ? { ...prev, exercises: currTrainExercises } : prev);
         }
     };
 
@@ -50,6 +64,8 @@ export default function useTrain(id: number) {
 
     const addTrainExercises = async (exercises: Exercise[]) => {
         if (!train?.exercises) return;
+
+        setError(null);
 
         const currTrainExercises = train.exercises;
 
@@ -62,7 +78,7 @@ export default function useTrain(id: number) {
         ];
 
         const updateExercises = newTrainExercises.map(te => 
-            te.id > 0 ? { id: te.id } : { exerciseId: te.exercise.id }
+            te.id > 0 ? { id: te.id } : { exerciseId: te.exercise.id, tempId: te.id }
         );
 
         setTrain(prev => prev ? {
@@ -71,17 +87,47 @@ export default function useTrain(id: number) {
         } : prev)
 
         try {
-            updateTrainExercises(updateExercises);
-        } catch (err) {
+            const updatedTrainExercises = await serviceUpdateTrainExercises(id, {
+                exercises: updateExercises
+            });
+
+            if (!updatedTrainExercises) return;
+
+            const tempIds = new Map();
+
+            updatedTrainExercises?.forEach(te => {
+                if (te.tempId) tempIds.set(te.tempId, te.id);
+            });
+
+            setTrain(prev => {
+                if (!prev?.exercises) return prev;
+
+                const res = {
+                    ...prev,
+                    exercises: prev.exercises.map(ex => { 
+                        const tempId = tempIds.get(ex.id);
+
+                        return ex.id < 0 && tempId ? { ...ex, id: tempId } : ex;
+                    })
+                };
+
+                return res;
+            });
+        } catch (err: any) {
             console.error(err);
+            setError(err.message || "Train exercises add failed");
             setTrain(prev => prev ? { ...prev, exercises: currTrainExercises } : prev);
         }
     };
 
-    const deleteTrainExercise = async (id: number) => {
+    const deleteTrainExercise = async (trainExerciseId: number) => {
         if (!train?.exercises) return;
 
-        const newTrainExercises = train.exercises.filter(exercise => exercise.id !== id);
+        setError(null);
+
+        const currTrainExercises = train.exercises;
+
+        const newTrainExercises = train.exercises.filter(exercise => exercise.id !== trainExerciseId);
 
         const updateExercises = newTrainExercises.map(exercise => ({ id: exercise.id }));
 
@@ -94,7 +140,15 @@ export default function useTrain(id: number) {
             }
         });
 
-        updateTrainExercises(updateExercises);
+        try {
+            await serviceUpdateTrainExercises(id, {
+                exercises: updateExercises
+            });
+        } catch (err: any) {
+            console.error(err);
+            setError(err.message || "Train exercise delete failed");
+            setTrain(prev => prev ? { ...prev, exercises: currTrainExercises } : prev);
+        }
     };
 
     useEffect(() => {
@@ -107,7 +161,7 @@ export default function useTrain(id: number) {
         error,
         fetchTrain,
         addTrainExercises,
-        updateTrainExercises,
+        updateTrainExercisesOrder,
         deleteTrainExercise
     }
 };
