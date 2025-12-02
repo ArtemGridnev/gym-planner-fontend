@@ -103,6 +103,7 @@ export default function Train() {
                                     columns={columns} 
                                     rows={rows}
                                     onChange={(orderedRows) => {
+                                        setRows(orderedRows);
                                         updateTrainExercisesOrder(orderedRows.map(row => ({ id: +row.id })))
                                     }}
                                 />

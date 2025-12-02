@@ -14,11 +14,16 @@ export function SortableItem({ id, children }: SortableItemProps) {
     attributes,
     listeners,
     setNodeRef,
-    transform,
+    transform: transformObject,
     transition,
-    isDragging
+    isDragging,
+    setActivatorNodeRef
   } = useSortable({ id });
   
+  const transformStyle = transformObject
+  ? { transform: `translate(${transformObject.x}px, ${transformObject.y}px)` }
+  : {};
+
   return (
     <Box 
         sx={{
@@ -27,18 +32,18 @@ export function SortableItem({ id, children }: SortableItemProps) {
             gap: '0.5rem',
             alignItems: 'center',
             transition,
-            ...(transform && {
-                transform: `${CSS.Transform.toString(transform)}`,
-            }),
+            ...transformStyle,
             zIndex: isDragging ? 10 : 1,
         }} 
+        ref={setNodeRef}
+        
     >
         <Box
             sx={{ 
                 color: 'text.secondary',
                 cursor: isDragging ? "grabbing" : "grab",
             }} 
-            ref={setNodeRef}
+            ref={setActivatorNodeRef}
             {...attributes} 
             {...listeners}
         >
