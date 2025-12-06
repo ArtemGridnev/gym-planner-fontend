@@ -9,35 +9,53 @@ export type DataCardProps = {
     title: string;
     children?: React.ReactNode;
     menuItems?: MenuItemProps[];
-}
+    onClick?: () => void;
+};
 
-export default function DataCard({ icon: Icon, title, children, menuItems }: DataCardProps) {
+export default function DataCard({ icon: Icon, title, children, menuItems, onClick }: DataCardProps) {
     return (
-        <Box sx={{
-            display: 'flex',
-            gap: '0.75rem',
-            padding: '0.75rem',
-            alignItems: 'flex-start',
-            borderColor: 'divider',
-            borderWidth: 1,
-            borderStyle: 'solid',
-            borderRadius: (theme) => theme.shape.borderRadius,
-        }}>
+        <Box 
+            sx={{
+                display: 'flex',
+                background: 'white',
+                gap: '0.75rem',
+                padding: '0.75rem',
+                alignItems: 'flex-start',
+                borderColor: 'divider',
+                borderWidth: 1,
+                borderStyle: 'solid',
+                borderRadius: (theme) => theme.shape.borderRadius,
+            }}
+        >
             {Icon && (
-                <Icon sx={{ 
-                    color: 'text.secondary'
-                }} />
+                <Icon 
+                    sx={{ 
+                        width: '1.5rem',
+                        height: '1.5rem',
+                        color: 'text.secondary',
+                        ...(onClick && { cursor: 'pointer' })
+                    }}
+                    {...(onClick && { onClick: () => onClick() })}
+                 />
             )}
-            <Box sx={{ flexGrow: 1 }}>
+            <Box 
+                sx={{ 
+                    flexGrow: 1,
+                    ...(onClick && { cursor: 'pointer' })
+                }}
+                {...(onClick && { onClick: () => onClick() })}
+            >
                 <Typography variant="body1" sx={{ marginBottom: '0.75rem' }}>{title}</Typography>
                 {children}
             </Box>
             {menuItems && (
-                <ButtonMenu items={menuItems}>
-                    <IconButton>
-                        <MoreVertOutlined />
-                    </IconButton>
-                </ButtonMenu>
+                <Box onClick={(e) => e.preventDefault()}>
+                    <ButtonMenu items={menuItems}>
+                        <IconButton>
+                            <MoreVertOutlined />
+                        </IconButton>
+                    </ButtonMenu>
+                </Box>
             )}
         </Box>
     );

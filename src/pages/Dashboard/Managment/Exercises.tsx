@@ -1,7 +1,7 @@
 import { AddOutlined, DeleteOutline, EditOutlined, FitnessCenterOutlined } from "@mui/icons-material";
 import Card from "../../../components/dashboard/content/card/Card";
 import CardHeader from "../../../components/dashboard/content/card/CardHeader";
-import { Box, CircularProgress } from "@mui/material";
+import { Box } from "@mui/material";
 import CardContent from "../../../components/dashboard/content/card/CardContent";
 import DataCardList, { type DataCardListColumnProps, type DataCardListRowProps } from "../../../components/dataCardList/DataCardList";
 import useExercises from "../../../hooks/Exercises/useExercises";
@@ -9,6 +9,8 @@ import Modal from "../../../components/modal/Modal";
 import { useEffect, useState } from "react";
 import ExerciseForm from "../../../components/forms/ExerciseForm";
 import type { Exercise } from "../../../types/exercise";
+import Alerts from "../../../components/Alerts";
+import DataCardListSkeleton from "../../../components/dataCardList/skeleton/DataCardListSkeleton";
 
 const columns: DataCardListColumnProps[] = [
     { field: 'description', fullWidth: true },
@@ -23,6 +25,7 @@ export default function Exercises() {
         exercises, 
         loading, 
         error, 
+        fetchExercises,
         addExercise,
         updateExercise,
         deleteExercise
@@ -30,36 +33,6 @@ export default function Exercises() {
     const [rows, setRows] = useState<DataCardListRowProps[]>([]);
     const [exerciseId, setExerciseId] = useState<number | null>(null);
     const [formOpen, setFormOpen] = useState(false);
-
-    useEffect(() => {
-        if (exercises) {
-            setRows(exercises?.map(exercise => ({
-                icon: FitnessCenterOutlined,
-                title: `${exercise.name} - ${exercise.category.name}`,
-                data: {
-                    id: exercise.id,
-                    description: exercise.description,
-                    sets: exercise.sets,
-                    reps: exercise.reps,
-                    durationSeconds: exercise.durationSeconds && `${exercise.durationSeconds} sec`,
-                    weight: exercise.weight && `${exercise.weight} kg`
-                },
-                menuItems: [
-                    { 
-                        icon: EditOutlined, 
-                        text: 'edit', 
-                        onClick: () => {
-                            setExerciseId(exercise.id); 
-                            setFormOpen(true);
-                        }  
-                    },
-                    { icon: DeleteOutline, text: 'delete', onClick: () => deleteExercise(exercise.id) },
-                ]
-            })));
-        } else {
-            setRows([]);
-        }
-    }, [exercises]);
 
     const onFormSubmit = (exercise: Exercise) => {
         setFormOpen(false); 
@@ -71,20 +44,61 @@ export default function Exercises() {
         }
     };
 
+    useEffect(() => {
+        if (exercises) {
+            setRows(exercises?.map(exercise => { 
+                console.log('weight', typeof exercise.weight);
+
+                return {
+                    icon: FitnessCenterOutlined,
+                    title: `${exercise.name} - ${exercise.category.name}`,
+                    data: {
+                        id: exercise.id,
+                        description: exercise.description,
+                        sets: exercise.sets,
+                        reps: exercise.reps,
+                        durationSeconds: exercise.durationSeconds && `${exercise.durationSeconds.toLocaleString()} sec`,
+                        weight: exercise.weight && `${exercise.weight.toLocaleString()} kg`
+                    },
+                    menuItems: [
+                        { 
+                            icon: EditOutlined, 
+                            text: 'edit', 
+                            onClick: () => {
+                                setExerciseId(exercise.id); 
+                                setFormOpen(true);
+                            }  
+                        },
+                        { icon: DeleteOutline, text: 'delete', onClick: () => deleteExercise(exercise.id) },
+                    ]
+                };
+            }
+        ));
+        } else {
+            setRows([]);
+        }
+    }, [exercises]);
+
+    useEffect(() => {
+        fetchExercises();
+    }, []);
+
     return (
         <>
             <Modal 
-                title={exerciseId ? "Update Exercise" : "Create exercise"}
                 open={formOpen} 
                 onClose={() => setFormOpen(false)} 
                 width="30rem"
             >
-                <Box sx={{ p: '0.75rem' }}>
-                    <ExerciseForm 
-                        onSuccess={onFormSubmit} 
-                        exerciseId={exerciseId}
-                    />
-                </Box>
+                <Modal.Header>{exerciseId ? "Update Exercise" : "Create exercise"}</Modal.Header>
+                <Modal.Content>
+                    <Box sx={{ p: '0.75rem' }}>
+                        <ExerciseForm 
+                            onSuccess={onFormSubmit} 
+                            exerciseId={exerciseId}
+                        />
+                    </Box>
+                </Modal.Content>
             </Modal>
 
             <Card>
@@ -103,9 +117,15 @@ export default function Exercises() {
                     ]}
                 />
                 <CardContent>
-                    <Box sx={{ padding: '1rem' }}>
-                        {loading && <CircularProgress size={20} color="inherit" />}
-                        {error && <Box>{error}</Box>}
+                    <Box 
+                        sx={{ 
+                            height: '100%',
+                            padding: '1rem',
+                            overflowY: loading ? 'hidden' : 'auto'
+                        }}
+                    >
+                        {error && <Alerts error={error} />}
+                        {loading && <DataCardListSkeleton columns={{ min: 3, max: 6 }} rows={8} icon={true} menuItems={true} />}
                         {exercises && !loading && <DataCardList columns={columns} rows={rows} />}
                     </Box>
                 </CardContent>

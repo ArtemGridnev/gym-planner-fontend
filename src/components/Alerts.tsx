@@ -3,7 +3,7 @@ import { Alert, Stack } from "@mui/material";
 type AlertsProps = {
     success?: string | null;
     error?: string | null;
-}
+};
 
 export default function Alerts({ success = null, error = null }: AlertsProps) {
     return (

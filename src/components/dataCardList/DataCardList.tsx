@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
-import DataCard from "./DataCard";
 import type { MenuItemProps } from "../menu/MenuItem";
 import type { ElementType } from "react";
+import DataCardListItem from "./DataCardListItem";
 
 export type DataCardListColumnProps = {
     field: string;
@@ -12,8 +12,9 @@ export type DataCardListColumnProps = {
 export type DataCardListRowProps = {
     icon: ElementType;
     title: string;
-    data: Record<string, any>;
+    data: Record<string, null | string | number>;
     menuItems?: MenuItemProps[];
+    onClick?: () => void;
 };
 
 export type DataCardListProps = {
@@ -38,47 +39,9 @@ export default function DataCardList({ columns, rows }: DataCardListProps) {
                 }}
             >
                 {rows.map((row, index) => (
-                    <DataCard
-                        title={row.title}
-                        icon={row.icon}
-                        menuItems={row.menuItems}
-                        key={index}
-                    >
-                        <Box sx={{ 
-                            containerName: 'DataCardContainer',
-                            containerType: 'inline-size'
-                        }}>
-                            <Box
-                                sx={{
-                                    display: 'grid',
-                                    gap: '1rem',
-                                    gridTemplateColumns: 'repeat(2, 1fr)',
-                                    containerType: 'inline-size',
-                                    '@container DataCardContainer (max-width: 300px)': {
-                                        gridTemplateColumns: '1fr',
-                                    },
-                                }}
-                            >
-                                {columns.map((column, index) => 
-                                    row.data[column.field] && (
-                                        <Box 
-                                            sx={{
-                                                ...(column.fullWidth && { gridColumn: '1 / -1' }),
-                                            }} 
-                                            key={index}
-                                        >
-                                            {column.name && <Box sx={{ color: 'text.secondary' }} component="span">{column.name}: </Box>}
-                                            {row.data[column.field]}
-                                        </Box>
-                                    )
-                                )}
-                            </Box>
-                        </Box>
-                        
-                    </DataCard>
+                    <DataCardListItem columns={columns} row={row} key={index} />
                 ))}
             </Box>
         </Box>
-
     );
 }

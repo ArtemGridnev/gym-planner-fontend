@@ -27,6 +27,7 @@ export const exerciseFormFields: FormFieldSchema[] = [
         name: "weight",
         type: "number",
         decimals: 3,
+        step: 2.5,
         unit: 'kg'
     },
     {
