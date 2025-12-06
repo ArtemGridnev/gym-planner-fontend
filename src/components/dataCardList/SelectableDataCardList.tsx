@@ -1,19 +1,18 @@
 import { useEffect, useState } from "react";
-import type { DataCardListColumnProps, DataCardListRowProps } from "./DataCardList";
+import type { DataCardListProps, DataCardListRowProps } from "./DataCardList";
 import DataCardListItem from "./DataCardListItem";
-import { Box, Checkbox } from "@mui/material";
+import { Box, Checkbox, Typography } from "@mui/material";
 
 export type SelectableDataCardListRowProps = DataCardListRowProps & {
     id: string
 };
 
-type SelectableDataCardListProps = {
-    columns: DataCardListColumnProps[];
+type SelectableDataCardListProps = Omit<DataCardListProps, 'rows'> & {
     rows: SelectableDataCardListRowProps[];
     onChange: (rows: string[]) => void;
 };
 
-export default function SelectableDataCardList({ columns, rows, onChange }: SelectableDataCardListProps) {
+export default function SelectableDataCardList({ columns, rows, onChange, noDataMessage = "No items here… yet." }: SelectableDataCardListProps) {
     const [selected, setSelected] = useState<string[]>([]);
 
     useEffect(() => {
@@ -28,6 +27,7 @@ export default function SelectableDataCardList({ columns, rows, onChange }: Sele
                 flexDirection: 'column'
             }}
         >
+            {rows.length === 0 && <Typography variant="h6" sx={{ textAlign: 'center'}}>{noDataMessage}</Typography>}
             {rows.map((row) => (
                 <Box 
                     sx={{

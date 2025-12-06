@@ -1,21 +1,20 @@
 import { SortableContext, arrayMove, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { SortableItem } from "../dnd/SortableItem";
-import type { DataCardListColumnProps, DataCardListRowProps } from "./DataCardList";
+import type { DataCardListProps, DataCardListRowProps } from "./DataCardList";
 import DataCardListItem from "./DataCardListItem";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import DndProvider from "../dnd/DndProvider";
 
 export type DraggableDataCardListRowProps = DataCardListRowProps & {
     id: string
 };
 
-type DraggableDataCardListProps = {
-    columns: DataCardListColumnProps[];
+type DraggableDataCardListProps = Omit<DataCardListProps, 'rows'> & {
     rows: DraggableDataCardListRowProps[];
     onChange: (rows: DraggableDataCardListRowProps[]) => void;
 };
 
-export default function DraggableDataCardList({ columns, rows, onChange }: DraggableDataCardListProps) {
+export default function DraggableDataCardList({ columns, rows, onChange, noDataMessage = "No items here… yet." }: DraggableDataCardListProps) {
     const handleDragEnd = (event: any) => {
         const {active, over} = event;
         
@@ -42,6 +41,7 @@ export default function DraggableDataCardList({ columns, rows, onChange }: Dragg
                         flexDirection: 'column'
                     }}
                 >
+                    {rows.length === 0 && <Typography variant="h6" sx={{ textAlign: 'center', }}>{noDataMessage}</Typography>}
                     {rows.map((row) => (
                         <SortableItem key={row.id} id={row.id}>
                             {<DataCardListItem columns={columns} row={row} />}

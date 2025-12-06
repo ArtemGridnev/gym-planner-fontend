@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import type { MenuItemProps } from "../menu/MenuItem";
 import type { ElementType } from "react";
 import DataCardListItem from "./DataCardListItem";
@@ -20,9 +20,10 @@ export type DataCardListRowProps = {
 export type DataCardListProps = {
     columns: DataCardListColumnProps[];
     rows: DataCardListRowProps[];
+    noDataMessage?: string;
 };
 
-export default function DataCardList({ columns, rows }: DataCardListProps) {
+export default function DataCardList({ columns, rows, noDataMessage = "No items here… yet." }: DataCardListProps) {
     return (
         <Box sx={{
             containerName: 'CardListContainer',
@@ -38,6 +39,7 @@ export default function DataCardList({ columns, rows }: DataCardListProps) {
                     },
                 }}
             >
+                {rows.length === 0 && <Typography variant="h6" sx={{ textAlign: 'center', }}>{noDataMessage}</Typography>}
                 {rows.map((row, index) => (
                     <DataCardListItem columns={columns} row={row} key={index} />
                 ))}
