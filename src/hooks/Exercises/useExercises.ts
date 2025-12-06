@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { deleteExercise as serviceDeleteExercise, getExercisesList } from "../../services/exercisesService";
 import type { Exercise } from "../../types/exercise";
 

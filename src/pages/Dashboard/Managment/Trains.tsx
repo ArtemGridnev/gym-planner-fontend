@@ -1,4 +1,4 @@
-import { Box, CircularProgress } from "@mui/material";
+import { Box } from "@mui/material";
 import Card from "../../../components/dashboard/content/card/Card";
 import CardHeader from "../../../components/dashboard/content/card/CardHeader";
 import { AddOutlined, DeleteOutline, EditOutlined, SportsMartialArtsOutlined } from "@mui/icons-material";
@@ -12,6 +12,7 @@ import type { Train } from "../../../types/train";
 import TrainForm from "../../../components/forms/TrainFrom";
 import { useNavigate } from "react-router-dom";
 import Alerts from "../../../components/Alerts";
+import DataCardListSkeleton from "../../../components/dataCardList/skeleton/DataCardListSkeleton";
 
 function cronToDays(cron: string): string {
     const days: Record<string, string> = {
@@ -124,9 +125,15 @@ export default function Trains() {
                     ]}
                 />
                 <CardContent>
-                    <Box sx={{ padding: '1rem' }}>
-                        {loading && <CircularProgress size={25} color="inherit" sx={{ display: 'block', margin: 'auto' }} />}
+                    <Box 
+                        sx={{ 
+                            height: '100%',
+                            padding: '1rem',
+                            overflowY: loading ? 'hidden' : 'auto'
+                        }}
+                    >
                         {error && <Alerts error={error} />}
+                        {loading && <DataCardListSkeleton columns={1} rows={8} icon={true} menuItems={true} />}
                         {trains && !loading && <DataCardList columns={columns} rows={rows} />}
                     </Box>
                 </CardContent>

@@ -3,8 +3,8 @@ import DataCard from "./DataCard";
 import type { DataCardListColumnProps, DataCardListRowProps } from "./DataCardList";
 
 type DataCardListItemProps = {
-    columns: DataCardListColumnProps[],
-    row: DataCardListRowProps
+    columns: DataCardListColumnProps[];
+    row: DataCardListRowProps;
 };
 
 export default function DataCardListItem({ columns, row }: DataCardListItemProps) {
@@ -30,18 +30,34 @@ export default function DataCardListItem({ columns, row }: DataCardListItemProps
                         },
                     }}
                 >
-                    {columns.map((column, index) => 
-                        row.data[column.field] && (
-                            <Box 
-                                sx={{
-                                    ...(column.fullWidth && { gridColumn: '1 / -1' }),
-                                }} 
-                                key={index}
-                            >
-                                {column.name && <Box sx={{ color: 'text.secondary' }} component="span">{column.name}: </Box>}
-                                {row.data[column.field]}
-                            </Box>
-                        )
+                    {columns.map((column, index) =>  {
+                        const rawValue = row.data[column.field];
+
+                        if (rawValue) {
+                            let value;
+
+                            switch (typeof rawValue) {
+                                case 'number':
+                                    value = rawValue.toLocaleString();
+                                    break;
+                                default:
+                                    value = rawValue;
+                            }
+
+                            return (
+                                <Box 
+                                    sx={{
+                                        ...(column.fullWidth && { gridColumn: '1 / -1' }),
+                                    }} 
+                                    key={index}
+                                >
+                                    {column.name && <Box sx={{ color: 'text.secondary' }} component="span">{column.name}: </Box>}
+                                    {value}
+                                </Box>
+                            )
+                        } 
+                    }
+                        
                     )}
                 </Box>
             </Box>

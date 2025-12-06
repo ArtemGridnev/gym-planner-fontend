@@ -1,12 +1,12 @@
-export const isNotEmpty = (value: string) => {
+export const isNotEmpty = (value: string):boolean => {
     return value.trim().length > 0;
 };
 
-export const minLength = (length: number) => (value: string) => {
+export const minLength = (length: number) => (value: string):boolean => {
     return value.trim().length >= length;
 };
 
-export const maxLength = (length: number) => (value: string) => {
+export const maxLength = (length: number) => (value: string):boolean => {
     return value.trim().length <= length;
 };
 

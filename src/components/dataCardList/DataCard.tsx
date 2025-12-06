@@ -30,6 +30,8 @@ export default function DataCard({ icon: Icon, title, children, menuItems, onCli
             {Icon && (
                 <Icon 
                     sx={{ 
+                        width: '1.5rem',
+                        height: '1.5rem',
                         color: 'text.secondary',
                         ...(onClick && { cursor: 'pointer' })
                     }}

@@ -1,4 +1,4 @@
-import { Box, CircularProgress } from "@mui/material";
+import { Box } from "@mui/material";
 import Card from "../../../components/dashboard/content/card/Card";
 import CardHeader from "../../../components/dashboard/content/card/CardHeader";
 import CardContent from "../../../components/dashboard/content/card/CardContent";
@@ -11,6 +11,7 @@ import type { DataCardListColumnProps } from "../../../components/dataCardList/D
 import { useEffect, useState } from "react";
 import ExercisesSelectPopup from "../../../components/ExercisesSelectPopup";
 import Alerts from "../../../components/Alerts";
+import DraggableDataCardListSkeleton from "../../../components/dataCardList/skeleton/DraggableDataCardListSkeleton";
 
 const columns: DataCardListColumnProps[] = [
     { field: 'description', fullWidth: true },
@@ -89,16 +90,22 @@ export default function Train() {
                     ]}
                 />
                 <CardContent>
-                    <Box sx={{ padding: '1rem' }}>
-                        {loading && <CircularProgress size={25} color="inherit" sx={{ display: 'block', margin: 'auto' }} />}
-                        {error && <Alerts error={error} />}
-                        {train?.exercises && !loading && (
-                            <Box
-                                sx={{
-                                    maxWidth: '40rem',
-                                    margin: 'auto'
-                                }}
-                            >
+                    <Box 
+                        sx={{ 
+                            height: '100%',
+                            padding: '1rem',
+                            overflowY: loading ? 'hidden' : 'auto'
+                        }}
+                    >
+                        <Box
+                            sx={{
+                                maxWidth: '40rem',
+                                margin: 'auto',
+                            }}
+                        >
+                            {error && <Alerts error={error} />}
+                            {loading && <DraggableDataCardListSkeleton columns={{ min: 3, max: 6 }} rows={8} icon={true} menuItems={true} />}
+                            {train?.exercises && !loading && (
                                 <DraggableDataCardList 
                                     columns={columns} 
                                     rows={rows}
@@ -107,8 +114,8 @@ export default function Train() {
                                         updateTrainExercisesOrder(orderedRows.map(row => ({ id: +row.id })))
                                     }}
                                 />
-                            </Box>
-                        )}
+                            )}
+                        </Box>
                     </Box>
                 </CardContent>
             </Card>

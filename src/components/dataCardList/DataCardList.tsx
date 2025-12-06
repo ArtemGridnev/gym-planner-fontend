@@ -12,7 +12,7 @@ export type DataCardListColumnProps = {
 export type DataCardListRowProps = {
     icon: ElementType;
     title: string;
-    data: Record<string, any>;
+    data: Record<string, null | string | number>;
     menuItems?: MenuItemProps[];
     onClick?: () => void;
 };
