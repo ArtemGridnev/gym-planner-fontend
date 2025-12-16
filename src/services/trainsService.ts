@@ -2,7 +2,7 @@ import api from './api.ts';
 import { handleApiError } from '../utils/handleApiError.ts';
 import type { Train } from '../types/train.ts';
 
-export const getTrainsList = async () => {
+export const getTrains = async () => {
     try {
         const response = await api.get("/trains");
         return response.data;

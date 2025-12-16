@@ -15,7 +15,7 @@ export type SearchSelectOption = {
     label: string
 };
 
-type BaseField = {
+export type BaseField = {
     name: string;
     label: string;
     required?: boolean;
@@ -24,11 +24,23 @@ type BaseField = {
     endAdornment?: ElementType | string;
 };
 
-type TextField = BaseField & {
-    type: "text" | "textarea" | "email" | "password";
+export type TextField = {
+    type: "text";
 };
 
-type NumberField = BaseField & {
+export type Textarea = {
+    type: "textarea"
+}
+
+export type EmailField = {
+    type: "email"
+}
+
+export type PasswordField = {
+    type: "password"
+}
+
+export type NumberField = {
     type: "number";
     min?: number;
     max?: number;
@@ -37,20 +49,25 @@ type NumberField = BaseField & {
     unit?: string;
 };
 
-type SelectField = BaseField & {
+export type SelectField = {
     type: "select";
     options: SelectOption[] | (() => Promise<SelectOption[]>);
 };
 
-type SearchSelectField = BaseField & {
+export type SearchSelectField = {
     type: "searchSelect";
     options: SearchSelectOption[] | (() => Promise<SearchSelectOption[]>);
 };
 
-type CronField = BaseField & {
+export type SearchSelectMultipleField = {
+    type: "searchSelectMultiple";
+    options: SearchSelectOption[] | (() => Promise<SearchSelectOption[]>);
+};
+
+export type CronField = {
     type: "cron";
     fields: ('weekDays')[];
 };
 
-export type FormFieldSchema = TextField | SelectField | SearchSelectField | NumberField | CronField;
+export type FormFieldSchema = BaseField & (TextField | Textarea | EmailField | PasswordField | SelectField | SearchSelectField | SearchSelectMultipleField | NumberField | CronField);
 

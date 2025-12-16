@@ -1,16 +1,18 @@
 import { AddOutlined, DeleteOutline, EditOutlined, FitnessCenterOutlined } from "@mui/icons-material";
 import Card from "../../../components/dashboard/content/card/Card";
 import CardHeader from "../../../components/dashboard/content/card/CardHeader";
-import { Box } from "@mui/material";
+import { Box, LinearProgress } from "@mui/material";
 import CardContent from "../../../components/dashboard/content/card/CardContent";
 import DataCardList, { type DataCardListColumnProps, type DataCardListRowProps } from "../../../components/dataCardList/DataCardList";
-import useExercises from "../../../hooks/Exercises/useExercises";
+import useExercises from "../../../hooks/exercises/useExercises";
 import Modal from "../../../components/modal/Modal";
 import { useEffect, useState } from "react";
 import ExerciseForm from "../../../components/forms/ExerciseForm";
 import type { Exercise } from "../../../types/exercise";
 import Alerts from "../../../components/Alerts";
 import DataCardListSkeleton from "../../../components/dataCardList/skeleton/DataCardListSkeleton";
+import ExercisesListFilter from "../../../components/ExercisesListFilter";
+import Toolbar from "../../../components/toolbar/Toolbar";
 
 const columns: DataCardListColumnProps[] = [
     { field: 'description', fullWidth: true },
@@ -21,19 +23,20 @@ const columns: DataCardListColumnProps[] = [
 ];
 
 export default function Exercises() {
+    const [filters, setFilters] = useState<Record<string, string>>();
     const { 
         exercises, 
-        loading, 
+        isLoading, 
         error, 
         fetchExercises,
         addExercise,
         updateExercise,
         deleteExercise
-    } = useExercises();
+    } = useExercises({ filters });
     const [rows, setRows] = useState<DataCardListRowProps[]>([]);
     const [exerciseId, setExerciseId] = useState<number | null>(null);
     const [formOpen, setFormOpen] = useState(false);
-
+    
     const onFormSubmit = (exercise: Exercise) => {
         setFormOpen(false); 
         
@@ -47,8 +50,6 @@ export default function Exercises() {
     useEffect(() => {
         if (exercises) {
             setRows(exercises?.map(exercise => { 
-                console.log('weight', typeof exercise.weight);
-
                 return {
                     icon: FitnessCenterOutlined,
                     title: `${exercise.name} - ${exercise.category.name}`,
@@ -120,13 +121,28 @@ export default function Exercises() {
                     <Box 
                         sx={{ 
                             height: '100%',
-                            padding: '1rem',
-                            overflowY: loading ? 'hidden' : 'auto'
+                            overflowY: !exercises || exercises.length === 0 ? 'hidden' : 'auto'
                         }}
                     >
-                        {error && <Alerts error={error} />}
-                        {loading && <DataCardListSkeleton columns={{ min: 3, max: 6 }} rows={8} icon={true} menuItems={true} />}
-                        {exercises && !loading && <DataCardList columns={columns} rows={rows} />}
+                        <Toolbar>
+                            <ExercisesListFilter onChange={(filters) => setFilters(filters)} />
+                            {isLoading && exercises && (
+                                <LinearProgress 
+                                    sx={{
+                                        position: 'absolute',
+                                        width: '100%',
+                                        height: '2px',
+                                        bottom: 0,
+                                        left: 0
+                                    }}
+                                />
+                            )}
+                        </Toolbar>
+                        <Box sx={{ padding: '1rem' }}>
+                            {error && <Alerts error={error} />}
+                            {!exercises && <DataCardListSkeleton columns={{ min: 3, max: 6 }} rows={8} icon={true} menuItems={true} />}
+                            {exercises && <DataCardList columns={columns} rows={rows} />}
+                        </Box>
                     </Box>
                 </CardContent>
             </Card>

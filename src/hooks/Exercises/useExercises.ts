@@ -1,24 +1,43 @@
-import { useState } from "react";
-import { deleteExercise as serviceDeleteExercise, getExercisesList } from "../../services/exercisesService";
+import { useEffect, useRef, useState } from "react";
+import { deleteExercise as serviceDeleteExercise, getExercises, type ExercisesFilters } from "../../services/exercisesService";
 import type { Exercise } from "../../types/exercise";
 
-export default function useExercises() {
+type useExercisesProps = {
+    filters?: ExercisesFilters;
+}
+
+export default function useExercises({ filters }: useExercisesProps) {
     const [exercises, setExercises] = useState<Exercise[] | null>(null);
-    const [loading, setLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const requestIdRef = useRef(0);
 
     const fetchExercises = async () => {
-        try {
-            setLoading(true);
+        const currRequestId = ++requestIdRef.current;
 
-            const exercises = await getExercisesList();
+        const t = setTimeout(() => {
+            if (currRequestId === requestIdRef.current) {
+                setIsLoading(true);
+            }
+        }, 200);
+
+        try {
+            const exercises = await getExercises(filters);
+
+            if (currRequestId !== requestIdRef.current) return;
 
             setExercises(exercises);
         } catch (err: any) {
+            if (currRequestId !== requestIdRef.current) return;
+
             console.error(err);
             setError(err.message || "Exercises fetch failed");
         } finally {
-            setLoading(false);
+            clearTimeout(t);
+
+            if (currRequestId !== requestIdRef.current) return;
+            
+            setIsLoading(false);
         }
     };
 
@@ -30,7 +49,7 @@ export default function useExercises() {
         setExercises(prev => 
             prev?.map(e => e.id === exercise.id ? exercise : e) || prev
         );
-    };
+    }; 
 
     const deleteExercise = async (id: number) => {
         const oldExercises = exercises;
@@ -46,8 +65,12 @@ export default function useExercises() {
         }
     };
 
+    useEffect(() => {
+        fetchExercises();
+    }, [filters]);
+
     return {
-        loading,
+        isLoading,
         exercises,
         error,
         fetchExercises,

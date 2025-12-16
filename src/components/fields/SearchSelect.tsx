@@ -1,23 +1,25 @@
-import { Autocomplete, TextField, type TextFieldProps } from "@mui/material";
+import { Autocomplete, TextField, type AutocompleteProps, type TextFieldProps } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import type { SearchSelectOption } from "../../types/formFieldSchema";
 
-type SearchSelectProps = Omit<TextFieldProps, 'onChange'> & {
+type SearchSelectProps = Omit<AutocompleteProps<SearchSelectOption, false, false, false>, 'onChange' | 'options' | 'renderInput' | 'value'> & {
     options: SearchSelectOption[] | (() => Promise<SearchSelectOption[]>);
-    onChange: (selectedOption: SearchSelectOption | null) => void,
+    onChange: (selectedOption: SearchSelectOption | null) => void;
+    value?: string;
+    input?: TextFieldProps;
 };
 
-export default function SearchSelect({ options, onChange, value, ...props }: SearchSelectProps) {
+export default function SearchSelect({ options, onChange, value, input }: SearchSelectProps) {
     const [selectOptions, setSelectOptions] = useState<SearchSelectOption[]>([]);
 
-    const selectOptionsMap = useMemo(() => {
-        const map = new Map();
+    const map = useMemo(() => {
+        const m = new Map();
 
         selectOptions.forEach(option => {
-            map.set(option.id.toString(), option);
+            m.set(option.id.toString(), option);
         });
 
-        return map;
+        return m;
     }, [selectOptions])
 
     const fetchOptions = async (fun: () => Promise<SearchSelectOption[]>) => {
@@ -38,11 +40,11 @@ export default function SearchSelect({ options, onChange, value, ...props }: Sea
         <Autocomplete
             disablePortal
             options={selectOptions}
-            onChange={(e, option) => {
+            onChange={(_, option) => {
                 onChange(option || null);
             }}
-            value={selectOptionsMap.get(value) ?? null}
-            renderInput={(params) => <TextField {...props} {...params}  />}
+            value={map.get(value) ?? null}
+            renderInput={(params) => <TextField {...input} {...params}  />}
         />
     );
 }

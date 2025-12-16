@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import type { FormFieldSchema } from "../../types/formFieldSchema";
-import useFormState from "./useFormState";
 import { isNotEmpty } from "../../utils/validation";
+import useFormState from "./useFormState";
 
 export default function useForm(fields: FormFieldSchema[]) {
     const initialValues = fields.reduce((acc, f) => ({ ...acc, [f.name]: "" }), {});

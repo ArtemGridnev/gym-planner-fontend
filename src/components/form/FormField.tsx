@@ -1,16 +1,17 @@
 import { TextField } from "@mui/material";
-import PasswordField from "./PasswordField";
+import PasswordField from "../fields/PasswordField";
 import type { FormFieldSchema } from "../../types/formFieldSchema";
-import Select from "./Select";
-import SearchSelect from "./SearchSelect";
-import NumberField from "./NumberField";
-import CronField from "./CronField";
+import Select from "../fields/Select";
+import SearchSelect from "../fields/SearchSelect";
+import NumberField from "../fields/NumberField";
+import CronField from "../fields/CronField";
+import SearchSelectMultiple from "../fields/SearchSelectMultiple";
 
 export type FormFieldProps = FormFieldSchema & {
     value: string;
-    error: string | null;
+    error?: string | null;
     onChange: (name: string, value: string) => void;
-    onBlur: (name: string) => void;
+    onBlur?: (name: string) => void;
 };
 
 export default function FormField(props: FormFieldProps) {
@@ -33,10 +34,9 @@ export default function FormField(props: FormFieldProps) {
                     label={label}
                     aria-label={label}
                     type={type}
-                    variant="outlined"
                     required={required}
                     onChange={({ target: { value: inputValue } }) => onChange(name, inputValue)}
-                    onBlur={() => onBlur(name)}
+                    onBlur={() => onBlur?.(name)}
                     value={value}
                     error={!!error}
                     helperText={error}
@@ -51,7 +51,7 @@ export default function FormField(props: FormFieldProps) {
                     required={required}
                     value={value}
                     onChange={({ target: { value: inputValue } }) => onChange(name, inputValue)}
-                    onBlur={() => onBlur(name)}
+                    onBlur={() => onBlur?.(name)}
                     error={!!error}
                     helperText={error}
                     options={props.options}
@@ -61,13 +61,31 @@ export default function FormField(props: FormFieldProps) {
         case 'searchSelect':
             return (
                 <SearchSelect 
-                    label={label}
-                    required={required}
+                    input={{
+                        label,
+                        required,
+                        error: !!error,
+                        helperText: error
+                    }}
                     value={value}
                     onChange={(selectedOption) => onChange(name, selectedOption?.id.toString() || '')}
-                    onBlur={() => onBlur(name)}
-                    error={!!error}
-                    helperText={error}
+                    onBlur={() => onBlur?.(name)}
+                    options={props.options}
+                />
+            );
+        
+        case 'searchSelectMultiple':
+            return (
+                <SearchSelectMultiple 
+                    input={{
+                        label,
+                        required,
+                        error: !!error,
+                        helperText: error
+                    }}
+                    value={value}
+                    onChange={(selectedOptions) => onChange(name, selectedOptions.map(o => o.id).join(','))}
+                    onBlur={() => onBlur?.(name)}
                     options={props.options}
                 />
             );
@@ -79,7 +97,7 @@ export default function FormField(props: FormFieldProps) {
                   required={required}
                   value={value}
                   onChange={({ target: { value: inputValue } }) => onChange(name, inputValue)}
-                  onBlur={() => onBlur(name)}
+                  onBlur={() => onBlur?.(name)}
                   error={!!error}
                   helperText={error}
                 />
@@ -94,16 +112,17 @@ export default function FormField(props: FormFieldProps) {
                  />
             );
 
-        default:
+        case 'textarea': 
+        case 'text': 
+        case 'email':
             return (
                 <TextField
                     label={label}
                     aria-label={label}
                     type={type}
-                    variant="outlined"
                     required={required}
                     onChange={({ target: { value: inputValue } }) => onChange(name, inputValue)}
-                    onBlur={() => onBlur(name)}
+                    onBlur={() => onBlur?.(name)}
                     value={value}
                     error={!!error}
                     helperText={error}

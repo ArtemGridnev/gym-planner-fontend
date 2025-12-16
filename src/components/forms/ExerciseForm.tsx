@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import Form from "../form/Form";
 import Alerts from "../Alerts";
-import useExerciseForm from "../../hooks/Exercises/useExerciseForm";
+import useExerciseForm from "../../hooks/exercises/useExerciseForm";
 import type { Exercise } from "../../types/exercise";
 
 type ExerciseFormProps = {

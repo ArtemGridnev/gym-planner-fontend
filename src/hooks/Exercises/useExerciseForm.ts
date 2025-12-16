@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { exerciseFormFields as formFields } from "../../forms/exerciseFormFields";
-import useForm from "../Form/useForm";
+import useForm from "../form/useForm";
 import { getExercise, postExercise, updateExercise } from "../../services/exercisesService";
 import type { Exercise } from "../../types/exercise";
 

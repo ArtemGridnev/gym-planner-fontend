@@ -6,11 +6,11 @@ type ModalProps = Omit<MuiModalProps, 'children'> & {
     open: boolean,
     onClose: () => void,
     children: React.ReactNode;
-    width?: string;
-    height?: string;
+    width?: number | string;
+    height?: number | string;
 };
 
-const ModalContext = React.createContext<{ onClose?: () => void }>({});
+const ModalContext = React.createContext<{ onClose: () => void } | null>(null);
 
 export default function Modal({ open, onClose, width, height, children }: ModalProps) {
     return (
@@ -49,28 +49,39 @@ type ModalHeaderProps = {
 };
 
 Modal.Header = function Header({ children }: ModalHeaderProps) {
-    const { onClose } = React.useContext(ModalContext)
-
+    const ctx = React.useContext(ModalContext);
+  
+    if (!ctx) {
+      throw new Error("Modal.Header must be used inside <Modal>");
+    }
+  
+    const { onClose } = ctx;
+  
     return (
-        <>
-            <Box sx={{
-                display: 'flex',
-                minHeight: '60px',
-                padding: '0.75rem',
-                alignItems: 'center',
-                justifyContent: 'space-between'
-            }}>
-                <Typography sx={{ paddingInline: '0.5rem' }} variant="h6">{children}</Typography>
-                <Box>
-                    <IconButton onClick={() => onClose!()} aria-label="Close popup">
-                        <CloseOutlined />
-                    </IconButton>
-                </Box>
-            </Box>
-            <Divider />
-        </>
+      <>
+        <Box
+          sx={{
+            display: 'flex',
+            minHeight: 60,
+            p: '0.75rem',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexShrink: 0
+          }}
+        >
+          <Typography px="0.5rem" variant="h6">
+            {children}
+          </Typography>
+  
+          <IconButton onClick={onClose} aria-label="Close popup">
+            <CloseOutlined />
+          </IconButton>
+        </Box>
+        <Divider />
+      </>
     );
-};
+  };
+  
 
 Modal.Content = function Content({ children }: { children: React.ReactNode }) {
     return (
@@ -84,17 +95,14 @@ Modal.Footer = function Footer({ children }: { children: React.ReactNode }) {
     return (
         <>
             <Divider />
-            <Box sx={{
-                display: 'flex',
-                minHeight: '60px',
-                padding: '0.75rem',
-                alignItems: 'center',
-                justifyContent: 'space-between'
-            }}>
-                <Box></Box>
-                <Box>
-                    {children}
-                </Box>
+            <Box 
+                sx={{
+                    minHeight: '60px',
+                    padding: '0.75rem',
+                    flexShrink: 0
+                }}
+            >
+                {children}
             </Box>
         </>
     );

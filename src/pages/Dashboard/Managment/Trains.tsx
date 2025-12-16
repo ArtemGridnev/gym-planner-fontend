@@ -5,7 +5,7 @@ import { AddOutlined, DeleteOutline, EditOutlined, SportsMartialArtsOutlined } f
 import CardContent from "../../../components/dashboard/content/card/CardContent";
 import { useEffect, useState } from "react";
 import type { DataCardListColumnProps, DataCardListRowProps } from "../../../components/dataCardList/DataCardList";
-import useTrains from "../../../hooks/Trains/useTrains";
+import useTrains from "../../../hooks/trains/useTrains";
 import DataCardList from "../../../components/dataCardList/DataCardList";
 import Modal from "../../../components/modal/Modal";
 import type { Train } from "../../../types/train";

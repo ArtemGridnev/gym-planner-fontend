@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { Train } from "../../types/train";
-import { deleteTrain as serviceDeleteTrain, getTrainsList } from "../../services/trainsService";
+import { deleteTrain as serviceDeleteTrain, getTrains } from "../../services/trainsService";
 
 export default function useTrains() {
     const [trains, setTrains] = useState<Train[] | null>(null);
@@ -11,7 +11,7 @@ export default function useTrains() {
         try {
             setLoading(true);
 
-            const trains = await getTrainsList();
+            const trains = await getTrains();
 
             setTrains(trains);
         } catch (err: any) {
