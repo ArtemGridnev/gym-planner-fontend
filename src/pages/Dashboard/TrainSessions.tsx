@@ -1,5 +1,7 @@
+import { Box } from "@mui/material";
+
 export default function TrainSessions() {
     return (
-        <div>Training Sessions</div>
+        <Box>Training Sessions</Box>
     );
 }

@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import type { DataCardListProps, DataCardListRowProps } from "./DataCardList";
 import DataCardListItem from "./DataCardListItem";
 import { Box, Checkbox, Typography } from "@mui/material";
@@ -9,16 +8,11 @@ export type SelectableDataCardListRowProps = DataCardListRowProps & {
 
 type SelectableDataCardListProps = Omit<DataCardListProps, 'rows'> & {
     rows: SelectableDataCardListRowProps[];
-    onChange: (rows: string[]) => void;
+    selected: string[];
+    onChange: (id: string, checked: boolean) => void;
 };
 
-export default function SelectableDataCardList({ columns, rows, onChange, noDataMessage = "No items here… yet." }: SelectableDataCardListProps) {
-    const [selected, setSelected] = useState<string[]>([]);
-
-    useEffect(() => {
-        onChange(selected);
-    }, [selected]);
-
+export default function SelectableDataCardList({ columns, rows, selected, onChange, noDataMessage = "No items here… yet." }: SelectableDataCardListProps) {
     return (
         <Box
             sx={{
@@ -40,15 +34,8 @@ export default function SelectableDataCardList({ columns, rows, onChange, noData
                 >
                     <Checkbox 
                         value={row.id} 
-                        onChange={(e) => {
-                            setSelected(prev => {
-                                if (e.target.checked) {
-                                    return [...prev, row.id];
-                                } else {
-                                    return prev.filter(item => item !== row.id);
-                                }
-                            })
-                        }} 
+                        checked={selected.includes(row.id)}
+                        onChange={(e) => onChange(row.id, e.target.checked)} 
                     />
                     <Box sx={{ flexGrow: 1 }}>
                         <DataCardListItem columns={columns} row={row} />

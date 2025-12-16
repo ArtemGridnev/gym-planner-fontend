@@ -13,8 +13,6 @@ export default function CronField({ fields, onChange, value }: CronFieldProps) {
     useEffect(() => {
         const cron = `0 0 * * ${weekDays.length > 0 ? weekDays.join(',') : '*'}`;
 
-        console.log('cron', cron);
-
         if (cron !== value) {
             onChange(cron);
         }
@@ -23,8 +21,6 @@ export default function CronField({ fields, onChange, value }: CronFieldProps) {
     useEffect(() => {
         const parts = value?.trim()?.split(' ');
         const valueWeekDays = !parts[4] || parts[4] === '*' ? [] : parts[4].replaceAll('*', '').split(',').filter(str => str !== '');
-
-        console.log(valueWeekDays.join(','), weekDays.join(','));
 
         if (valueWeekDays.join(',') !== weekDays.join(',')) {
             setWeekDays(valueWeekDays);
@@ -37,7 +33,7 @@ export default function CronField({ fields, onChange, value }: CronFieldProps) {
                 switch (field) {
                     case 'weekDays':
                         return (
-                            <ToggleButtonGroup 
+                            <ToggleButtonGroup
                                 key={field}
                                 label="Days"
                                 options={[

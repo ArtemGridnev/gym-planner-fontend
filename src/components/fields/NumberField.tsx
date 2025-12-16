@@ -1,13 +1,13 @@
 import { InputAdornment, TextField, type TextFieldProps } from "@mui/material";
 
 type NumberFieldProps = Omit<TextFieldProps, 'onChange'> & {
-    onChange: NonNullable<TextFieldProps['onChange']>;
-    value: number | string;
-    min?: number;
-    max?: number;
-    decimals?: number;
-    step?: number;
-    unit?: string;
+  onChange: NonNullable<TextFieldProps['onChange']>;
+  value: number | string;
+  min?: number;
+  max?: number;
+  decimals?: number;
+  step?: number;
+  unit?: string;
 };
 
 export default function NumberField({ min, max, decimals, step = 1, unit, onChange, value, ...props }: NumberFieldProps) {

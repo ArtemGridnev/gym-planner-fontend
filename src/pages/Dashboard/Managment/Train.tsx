@@ -5,7 +5,7 @@ import CardContent from "../../../components/dashboard/content/card/CardContent"
 import { AddOutlined, DeleteOutline, FitnessCenterOutlined } from "@mui/icons-material";
 import { useNavigate, useParams } from "react-router-dom";
 import type { Train } from "../../../types/train";
-import useTrain from "../../../hooks/Trains/useTrain";
+import useTrain from "../../../hooks/trains/useTrain";
 import DraggableDataCardList, { type DraggableDataCardListRowProps } from "../../../components/dataCardList/DraggableDataCardList";
 import type { DataCardListColumnProps } from "../../../components/dataCardList/DataCardList";
 import { useEffect, useState } from "react";
@@ -45,7 +45,7 @@ export default function Train() {
                 return {
                     id: trainExercise.id.toString(),
                     icon: FitnessCenterOutlined,
-                    title: `${exercise.name} - ${exercise.category?.name} (${trainExercise.id})`,
+                    title: `${exercise.name} - ${exercise.category?.name}`,
                     data: {
                         id: exercise.id,
                         description: exercise.description,
@@ -66,14 +66,16 @@ export default function Train() {
 
     return (
         <>
-            <ExercisesSelectPopup 
-                open={formOpen}
-                onClose={() => setFormOpen(false)}
-                onSubmit={(exercises) => {
-                    setFormOpen(false);
-                    addTrainExercises(exercises);
-                }}
-            />
+            {formOpen && (
+                <ExercisesSelectPopup 
+                    open={true}
+                    onClose={() => setFormOpen(false)}
+                    onSubmit={(exercises) => {
+                        setFormOpen(false);
+                        addTrainExercises(exercises);
+                    }}
+                />
+            )}
             <Card>
                 <CardHeader 
                     onBack={() => navigate('/managment/trains')}

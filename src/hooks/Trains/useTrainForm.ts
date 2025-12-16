@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { trainFormFields as formFields } from "../../forms/trainFormFields.ts";
-import useForm from "../Form/useForm";
-import type { Train } from "../../types/train";
-import { getTrain, postTrain, updateTrain } from "../../services/trainsService";
+import useForm from "../form/useForm.ts";
+import type { Train } from "../../types/train.ts";
+import { getTrain, postTrain, updateTrain } from "../../services/trainsService.ts";
 
 export default function useTrainForm(trainId: number | null = null) {
     const [loading, setLoading] = useState(false);

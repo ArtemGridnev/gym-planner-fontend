@@ -2,7 +2,7 @@ import { useState } from "react";
 import { register } from "../../services/authService";
 import { registerFormFields as formFields } from "../../forms/registerFormFields";
 import { useAuthContext } from "../../context/AuthProvider";
-import useForm from "../Form/useForm";
+import useForm from "../form/useForm";
 
 export default function useRegister() {
     const { setUser } = useAuthContext();

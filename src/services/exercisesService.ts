@@ -1,10 +1,20 @@
 import api from './api.ts';
 import { handleApiError } from '../utils/handleApiError.ts';
 import type { Exercise } from '../types/exercise.ts';
+import { objectToQuery } from '../utils/queryHelpers.ts';
 
-export const getExercisesList = async () => {
+export type ExercisesFilters = {
+    search?: string;
+    category?: string;
+    page?: number;
+    limit?: number;
+};
+
+export const getExercises = async (filters?: ExercisesFilters) => {
+    const query = filters ? objectToQuery(filters) : '';
+
     try {
-        const response = await api.get("/exercises");
+        const response = await api.get(`/exercises${query ? `?${query}` : ''}`);
         return response.data;
     } catch (error: any) {
         handleApiError(error);
@@ -20,7 +30,7 @@ export const getExercise = async (id: number): Promise<Exercise | undefined> => 
     }
 };
 
-export const getExercisesCategoriesList = async () => {
+export const getExercisesCategories = async () => {
     try {
         const response = await api.get("/exercises/categories");
         return response.data;

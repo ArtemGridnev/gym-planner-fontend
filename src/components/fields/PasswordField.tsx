@@ -2,9 +2,9 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { IconButton, InputAdornment, TextField, type TextFieldProps } from "@mui/material";
 import { useState } from "react";
 
-type PasswordFieldProps = TextFieldProps;
+type PasswordFieldProps = Omit<TextFieldProps, 'type'>;
 
-export default function PasswordField({ ...props }: PasswordFieldProps) {
+export default function PasswordField({ slotProps, ...props }: PasswordFieldProps) {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleClickShowPassword = () => setShowPassword(!showPassword);
@@ -14,6 +14,7 @@ export default function PasswordField({ ...props }: PasswordFieldProps) {
       {...props}
       type={showPassword ? 'text' : 'password'}
       slotProps={{
+        ...slotProps,
         input: {
           endAdornment: (
             <InputAdornment position="end">

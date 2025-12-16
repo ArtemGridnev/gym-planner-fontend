@@ -1,15 +1,15 @@
 import './App.css'
 import { Navigate, Route, Routes } from 'react-router-dom'
-import LoginPage from './pages/Auth/LoginPage'
-import RegisterPage from './pages/Auth/RegisterPage'
-import Dashboard from './pages/Dashboard/Dashboard'
-import Exercises from './pages/Dashboard/Managment/Exercises'
+import LoginPage from './pages/auth/LoginPage'
+import RegisterPage from './pages/auth/RegisterPage'
+import Dashboard from './pages/dashboard/Dashboard'
+import Exercises from './pages/dashboard/managment/Exercises'
 import AuthProvider from './context/AuthProvider'
 import ProtectedRoute from './components/routes/ProtectedRoute'
 import PublicRoute from './components/routes/PublicRoute'
-import Trains from './pages/Dashboard/Managment/Trains'
-import TrainSessions from './pages/Dashboard/TrainSessions'
-import Train from './pages/Dashboard/Managment/Train'
+import Trains from './pages/dashboard/managment/Trains'
+import TrainSessions from './pages/dashboard/TrainSessions'
+import Train from './pages/dashboard/managment/Train'
 
 function App() {
   return (

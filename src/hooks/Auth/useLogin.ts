@@ -2,7 +2,7 @@ import { useState } from "react";
 import { login } from "../../services/authService";
 import { useAuthContext } from "../../context/AuthProvider";
 import { loginFormFields as formFields } from "../../forms/loginFormFields";
-import useForm from "../Form/useForm";
+import useForm from "../form/useForm";
 
 export default function useLogin() {
     const { setUser } = useAuthContext();
@@ -30,7 +30,7 @@ export default function useLogin() {
         }
 
         try {
-            const data = await login(form.email, form.password);
+            const data = await login(form.email!, form.password!);
 
             setUser(data.user);
             
