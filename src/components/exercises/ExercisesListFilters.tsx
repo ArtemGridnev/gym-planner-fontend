@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
-import { exercisesFilter as fields } from '../filters/exercisesFilter'
-import useFilters from '../hooks/filters/useFilters'
-import ToolbarFilters from './toolbar/ToolbarFilters';
+import { exercisesFilter as fields } from '../../filters/exercisesFilter'
+import useFilters from '../../hooks/filters/useFilters'
+import ToolbarFilters from '../toolbar/ToolbarFilters';
 
-type ExercisesListFilterProps = {
+type ExercisesListFiltersProps = {
     onChange: (filters: Record<string, string>) => void
 };
 
-export default function ExercisesListFilter({ onChange }: ExercisesListFilterProps) {
+export default function ExercisesListFilters({ onChange }: ExercisesListFiltersProps) {
     const {
         filters,
         values,

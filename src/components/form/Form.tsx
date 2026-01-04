@@ -1,12 +1,12 @@
 import { Box, Button, CircularProgress } from "@mui/material";
-import type { FormFieldSchema } from '../../types/formFieldSchema';
+import type { FormFieldSchema } from '../../types/form/formFieldSchema';
 import FormField from "./FormField";
 
 type FormProps = {
     formFields: FormFieldSchema[];
-    form: Record<string, string>;
-    errors: Record<string, string | null>;
-    handleChange: (field: string, value: string) => void;
+    form: Record<string, any>;
+    errors: Record<string, any>;
+    handleChange: (field: string, value: any) => void;
     handleBlur: (field: string) => void;
     submitButtonText: string,
     onSubmit: (e: React.FormEvent) => void;
@@ -23,6 +23,8 @@ export default function Form({
     onSubmit,
     loading
 }: FormProps) {
+    console.log('formFields', formFields);
+
     return (
         <Box
             component="form"

@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
-import useRegister from "../../hooks/auth/useRegister";
-import Form from "../form/Form";
-import Alerts from "../Alerts";
+import useRegister from "../../../hooks/auth/useRegister";
+import Form from "../../form/Form";
+import Alerts from "../../train/Alerts";
 import { useEffect } from "react";
 
 type RegisterFormProps = {

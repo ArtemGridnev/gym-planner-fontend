@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { login } from "../../services/authService";
 import { useAuthContext } from "../../context/AuthProvider";
-import { loginFormFields as formFields } from "../../forms/loginFormFields";
+import { loginFormFields as formFields } from "../../forms/loginFormFields.schema";
 import useForm from "../form/useForm";
 
 export default function useLogin() {

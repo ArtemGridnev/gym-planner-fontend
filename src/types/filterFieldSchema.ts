@@ -1,4 +1,4 @@
-import type { BaseField, EmailField, NumberField, SearchSelectField, SearchSelectMultipleField, SelectField, TextField } from "./formFieldSchema";
+import type { BaseField, EmailField, NumberField, SearchSelectField, SearchSelectMultipleField, SelectField, TextField } from "./form/formFieldSchema";
 
 type SearchField = {
     type: 'search';

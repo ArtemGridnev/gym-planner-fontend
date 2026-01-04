@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { trainFormFields as formFields } from "../../forms/trainFormFields.ts";
+import { trainFormFields as formFields } from "../../forms/trainFormFields.schema.ts";
 import useForm from "../form/useForm.ts";
 import type { Train } from "../../types/train.ts";
 import { getTrain, postTrain, updateTrain } from "../../services/trainsService.ts";

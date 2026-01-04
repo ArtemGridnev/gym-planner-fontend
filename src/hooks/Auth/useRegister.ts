@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { register } from "../../services/authService";
-import { registerFormFields as formFields } from "../../forms/registerFormFields";
+import { registerFormFields as formFields } from "../../forms/registerFormFields.schema";
 import { useAuthContext } from "../../context/AuthProvider";
 import useForm from "../form/useForm";
 

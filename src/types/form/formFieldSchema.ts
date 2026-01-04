@@ -6,13 +6,14 @@ export type FormFieldSchemaValidator = {
 };
 
 export type SelectOption = {
-    value: string,
-    label: string
+    value: string;
+    label: string;
 };
 
-export type SearchSelectOption = {
-    id: number,
-    label: string
+export type SearchSelectOption<T = any> = {
+    id: number;
+    value: T;
+    label: string;
 };
 
 export type BaseField = {
@@ -29,11 +30,11 @@ export type TextField = {
 };
 
 export type Textarea = {
-    type: "textarea"
+    type: "textarea";
 }
 
 export type EmailField = {
-    type: "email"
+    type: "email";
 }
 
 export type PasswordField = {
@@ -51,17 +52,17 @@ export type NumberField = {
 
 export type SelectField = {
     type: "select";
-    options: SelectOption[] | (() => Promise<SelectOption[]>);
+    options: SelectOption[];
 };
 
 export type SearchSelectField = {
     type: "searchSelect";
-    options: SearchSelectOption[] | (() => Promise<SearchSelectOption[]>);
+    options: SearchSelectOption[];
 };
 
 export type SearchSelectMultipleField = {
     type: "searchSelectMultiple";
-    options: SearchSelectOption[] | (() => Promise<SearchSelectOption[]>);
+    options: SearchSelectOption[];
 };
 
 export type CronField = {

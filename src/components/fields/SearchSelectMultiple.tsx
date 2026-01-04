@@ -1,11 +1,11 @@
 import { Autocomplete, TextField, type AutocompleteProps, type TextFieldProps, Chip } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
-import type { SearchSelectOption } from "../../types/formFieldSchema";
+import type { SearchSelectOption } from "../../types/form/formFieldSchema";
 
 type SearchSelectProps = Omit<AutocompleteProps<SearchSelectOption, true, false, false>, 'onChange' | 'options' | 'renderInput' | 'value'> & {
     options: SearchSelectOption[] | (() => Promise<SearchSelectOption[]>);
     onChange: (selectedOption: SearchSelectOption[]) => void;
-    value?: string;
+    value?: SearchSelectOption[];
     input?: TextFieldProps;
 };
 
@@ -25,9 +25,7 @@ export default function SearchSelectMultiple({ options, onChange, value: rawValu
     const value = useMemo<SearchSelectOption[]>(() => {
         if (!rawValue) return [];
 
-        const ids = rawValue.split(',');
-
-        return ids.map(id => map.get(id)).filter(Boolean);
+        return rawValue.map(op => map.get(op.id)).filter(Boolean);
     }, [rawValue]);
 
     const fetchOptions = async (fun: () => Promise<SearchSelectOption[]>) => {

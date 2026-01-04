@@ -1,12 +1,12 @@
-import type { DataCardListColumnProps } from "./dataCardList/DataCardList";
-import Modal from "./modal/Modal";
+import type { DataCardListColumnProps } from "../../dataCardList/DataCardList";
+import Modal from "../../modal/Modal";
 import { Box, Button, LinearProgress, Typography } from "@mui/material";
-import SelectableDataCardList from "./dataCardList/SelectableDataCardList";
-import type { Exercise } from "../types/exercise";
-import Toolbar from "./toolbar/Toolbar";
-import ExercisesListFilter from "./ExercisesListFilter";
-import useExercisesSelect from "../hooks/exercises/useExercisesSelect";
-import SelectableDataCardListSkeleton from "./dataCardList/skeleton/SelectableDataCardListSkeleton";
+import SelectableDataCardList from "../../dataCardList/SelectableDataCardList";
+import type { Exercise } from "../../../types/exercise";
+import Toolbar from "../../toolbar/Toolbar";
+import ExercisesListFilters from "../ExercisesListFilters";
+import useExercisesSelect from "../../../hooks/exercises/useExercisesSelect";
+import SelectableDataCardListSkeleton from "../../dataCardList/skeleton/SelectableDataCardListSkeleton";
 
 const exercisesColumns: DataCardListColumnProps[] = [
     { field: 'description', fullWidth: true },
@@ -16,13 +16,13 @@ const exercisesColumns: DataCardListColumnProps[] = [
     { field: 'durationSeconds', name: 'Duration Seconds' },
 ];
 
-type ExercisesSelectPopupProps = {
+type ExercisesSelectModalProps = {
     open: boolean;
     onClose: () => void;
     onSubmit: (ids: Exercise[]) => void;
 };
 
-export default function ExercisesSelectPopup({ open, onClose, onSubmit }: ExercisesSelectPopupProps) {
+export default function ExercisesSelectModal({ open, onClose, onSubmit }: ExercisesSelectModalProps) {
     const {
         exercisesRows,
         isLoading,
@@ -48,7 +48,7 @@ export default function ExercisesSelectPopup({ open, onClose, onSubmit }: Exerci
                     }}
                 >
                     <Toolbar>
-                        <ExercisesListFilter onChange={setFilters} />
+                        <ExercisesListFilters onChange={setFilters} />
                         {isLoading && exercisesRows && (
                             <LinearProgress 
                                 sx={{

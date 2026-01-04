@@ -1,4 +1,4 @@
-import type { FormFieldSchema } from "../types/formFieldSchema";
+import type { FormFieldSchema } from "../types/form/formFieldSchema";
 
 export const loginFormFields: FormFieldSchema[] = [
     {

@@ -9,9 +9,9 @@ import useTrains from "../../../hooks/trains/useTrains";
 import DataCardList from "../../../components/dataCardList/DataCardList";
 import Modal from "../../../components/modal/Modal";
 import type { Train } from "../../../types/train";
-import TrainForm from "../../../components/forms/TrainFrom";
+import TrainForm from "../../../components/train/forms/TrainFrom";
 import { useNavigate } from "react-router-dom";
-import Alerts from "../../../components/Alerts";
+import Alerts from "../../../components/train/Alerts";
 import DataCardListSkeleton from "../../../components/dataCardList/skeleton/DataCardListSkeleton";
 
 function cronToDays(cron: string): string {
@@ -132,7 +132,7 @@ export default function Trains() {
                             overflowY: loading ? 'hidden' : 'auto'
                         }}
                     >
-                        {error && <Alerts error={error} />}
+                        <Alerts error={error} />
                         {loading && <DataCardListSkeleton columns={1} rows={8} icon={true} menuItems={true} />}
                         {trains && !loading && <DataCardList columns={columns} rows={rows} />}
                     </Box>

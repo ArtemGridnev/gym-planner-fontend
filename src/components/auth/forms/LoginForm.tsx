@@ -1,8 +1,8 @@
 import { Box, Typography } from "@mui/material";
-import useLogin from "../../hooks/auth/useLogin";
-import Alerts from "../Alerts";
+import useLogin from "../../../hooks/auth/useLogin";
+import Alerts from "../../train/Alerts";
 import { useEffect } from "react";
-import Form from "../form/Form";
+import Form from "../../form/Form";
 
 type LoginFormProps = {
     onSuccess: () => void;

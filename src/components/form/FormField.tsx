@@ -1,18 +1,24 @@
 import { TextField } from "@mui/material";
 import PasswordField from "../fields/PasswordField";
-import type { FormFieldSchema } from "../../types/formFieldSchema";
+import type { FormFieldSchema } from "../../types/form/formFieldSchema";
 import Select from "../fields/Select";
 import SearchSelect from "../fields/SearchSelect";
 import NumberField from "../fields/NumberField";
 import CronField from "../fields/CronField";
 import SearchSelectMultiple from "../fields/SearchSelectMultiple";
+import type { FormFieldValueMap } from "../../types/form/formFieldValueMap";
 
-export type FormFieldProps = FormFieldSchema & {
-    value: string;
-    error?: string | null;
-    onChange: (name: string, value: string) => void;
-    onBlur?: (name: string) => void;
-};
+type FormFieldPropsByType<T extends FormFieldSchema> =
+    T & {
+        value: FormFieldValueMap[T["type"]];
+        error?: string | null;
+        onChange: (name: string, value: FormFieldValueMap[T["type"]]) => void;
+        onBlur?: (name: string) => void;
+    };
+
+export type FormFieldProps = {
+    [K in FormFieldSchema as K["type"]]: FormFieldPropsByType<K>
+}[FormFieldSchema["type"]];
 
 export default function FormField(props: FormFieldProps) {
     const {
@@ -35,7 +41,7 @@ export default function FormField(props: FormFieldProps) {
                     aria-label={label}
                     type={type}
                     required={required}
-                    onChange={({ target: { value: inputValue } }) => onChange(name, inputValue)}
+                    onChange={({ target: { value: inputValue } }) => onChange(name, +inputValue)}
                     onBlur={() => onBlur?.(name)}
                     value={value}
                     error={!!error}
@@ -50,7 +56,7 @@ export default function FormField(props: FormFieldProps) {
                     label={label}
                     required={required}
                     value={value}
-                    onChange={({ target: { value: inputValue } }) => onChange(name, inputValue)}
+                    onChange={(selectedOption) => onChange(name, selectedOption)}
                     onBlur={() => onBlur?.(name)}
                     error={!!error}
                     helperText={error}
@@ -68,7 +74,7 @@ export default function FormField(props: FormFieldProps) {
                         helperText: error
                     }}
                     value={value}
-                    onChange={(selectedOption) => onChange(name, selectedOption?.id.toString() || '')}
+                    onChange={(selectedOption) => onChange(name, selectedOption)}
                     onBlur={() => onBlur?.(name)}
                     options={props.options}
                 />
@@ -84,7 +90,7 @@ export default function FormField(props: FormFieldProps) {
                         helperText: error
                     }}
                     value={value}
-                    onChange={(selectedOptions) => onChange(name, selectedOptions.map(o => o.id).join(','))}
+                    onChange={(selectedOptions) => onChange(name, selectedOptions)}
                     onBlur={() => onBlur?.(name)}
                     options={props.options}
                 />

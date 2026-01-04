@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import useExercises from "./useExercises";
+import useExercises from "./old_useExercises";
 import type { SelectableDataCardListRowProps } from "../../components/dataCardList/SelectableDataCardList";
 import type { Exercise } from "../../types/exercise";
 import { FitnessCenterOutlined } from "@mui/icons-material";

@@ -1,4 +1,4 @@
-import type { FormFieldSchema } from "../types/formFieldSchema";
+import type { FormFieldSchema } from "../types/form/formFieldSchema";
 import { maxLength } from "../utils/validation";
 
 export const trainFormFields: FormFieldSchema[] = [

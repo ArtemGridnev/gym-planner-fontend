@@ -10,7 +10,7 @@ export type DataCardListColumnProps = {
 };
 
 export type DataCardListRowProps = {
-    icon: ElementType;
+    icon?: ElementType;
     title: string;
     data: Record<string, null | string | number>;
     menuItems?: MenuItemProps[];
@@ -29,6 +29,7 @@ export default function DataCardList({ columns, rows, noDataMessage = "No items 
             containerName: 'CardListContainer',
             containerType: 'inline-size'
         }}>
+            {rows.length === 0 && <Typography variant="h6" sx={{ textAlign: 'center', }}>{noDataMessage}</Typography>}
             <Box
                 sx={{
                     display: 'grid',
@@ -39,7 +40,6 @@ export default function DataCardList({ columns, rows, noDataMessage = "No items 
                     },
                 }}
             >
-                {rows.length === 0 && <Typography variant="h6" sx={{ textAlign: 'center', }}>{noDataMessage}</Typography>}
                 {rows.map((row, index) => (
                     <DataCardListItem columns={columns} row={row} key={index} />
                 ))}

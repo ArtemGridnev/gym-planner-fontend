@@ -1,5 +1,5 @@
 import { Box, Container, Paper, Typography } from "@mui/material";
-import RegisterForm from "../../components/forms/RegisterFrom";
+import RegisterForm from "../../components/auth/forms/RegisterFrom";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function RegisterPage() {
