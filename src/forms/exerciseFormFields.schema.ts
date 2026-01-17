@@ -1,17 +1,15 @@
-import { getExercisesCategories } from '../services/exercisesService';
-import type { ExerciseCategory } from '../types/exerciseCategory';
-import type { FormFieldSchema } from '../types/formFieldSchema';
+import type { FormFieldSchema, SearchSelectOption } from '../types/form/formFieldSchema';
 import { maxLength } from '../utils/validation';
 
-export const exerciseFormFields: FormFieldSchema[] = [
+export const getExerciseFormFields = (
+    categories: SearchSelectOption[]
+): FormFieldSchema[] => [
     {
         label: "Category",
-        name: "categoryId",
+        name: "category",
         type: "searchSelect",
         required: true,
-        options: () => getExercisesCategories().then(categories =>
-            categories.map((category: ExerciseCategory) => ({ id: category.id, label: category.name }))
-        )
+        options: categories
     },
     {
         label: "Name",

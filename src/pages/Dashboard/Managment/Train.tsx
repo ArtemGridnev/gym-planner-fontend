@@ -9,8 +9,8 @@ import useTrain from "../../../hooks/trains/useTrain";
 import DraggableDataCardList, { type DraggableDataCardListRowProps } from "../../../components/dataCardList/DraggableDataCardList";
 import type { DataCardListColumnProps } from "../../../components/dataCardList/DataCardList";
 import { useEffect, useState } from "react";
-import ExercisesSelectPopup from "../../../components/ExercisesSelectPopup";
-import Alerts from "../../../components/Alerts";
+import ExercisesSelectModal from "../../../components/exercises/modals/ExercisesSelectModal";
+import Alerts from "../../../components/train/Alerts";
 import DraggableDataCardListSkeleton from "../../../components/dataCardList/skeleton/DraggableDataCardListSkeleton";
 
 const columns: DataCardListColumnProps[] = [
@@ -67,7 +67,7 @@ export default function Train() {
     return (
         <>
             {formOpen && (
-                <ExercisesSelectPopup 
+                <ExercisesSelectModal 
                     open={true}
                     onClose={() => setFormOpen(false)}
                     onSubmit={(exercises) => {
@@ -105,7 +105,7 @@ export default function Train() {
                                 margin: 'auto',
                             }}
                         >
-                            {error && <Alerts error={error} />}
+                            <Alerts error={error} />
                             {loading && <DraggableDataCardListSkeleton columns={{ min: 3, max: 6 }} rows={8} icon={true} menuItems={true} />}
                             {train?.exercises && !loading && (
                                 <DraggableDataCardList 

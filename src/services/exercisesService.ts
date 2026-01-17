@@ -2,15 +2,25 @@ import api from './api.ts';
 import { handleApiError } from '../utils/handleApiError.ts';
 import type { Exercise } from '../types/exercise.ts';
 import { objectToQuery } from '../utils/queryHelpers.ts';
+import type { ExerciseCategory } from '../types/exerciseCategory.ts';
 
-export type ExercisesFilters = {
+export type ExercisesQuery = {
     search?: string;
     category?: string;
     page?: number;
     limit?: number;
 };
 
-export const getExercises = async (filters?: ExercisesFilters) => {
+// export const getExercises = async () => {
+//     try {
+//         const response = await api.get(`/exercises`);
+//         return response.data;
+//     } catch (error: any) {
+//         handleApiError(error);
+//     }
+// };
+
+export const getExercises = async (filters?: ExercisesQuery) => {
     const query = filters ? objectToQuery(filters) : '';
 
     try {
@@ -30,7 +40,7 @@ export const getExercise = async (id: number): Promise<Exercise | undefined> => 
     }
 };
 
-export const getExercisesCategories = async () => {
+export const getExercisesCategories = async (): Promise<ExerciseCategory[] | undefined> => {
     try {
         const response = await api.get("/exercises/categories");
         return response.data;
@@ -39,7 +49,7 @@ export const getExercisesCategories = async () => {
     }
 };
 
-type ExerciseData = {
+export type CreateExercisePayload = {
     categoryId: string;
     name: string;
     description: string | null;
@@ -49,7 +59,7 @@ type ExerciseData = {
     weight?: string | null;
 };
 
-export const postExercise = async (data: ExerciseData) => {
+export const postExercise = async (data: CreateExercisePayload): Promise<Exercise | undefined> => {
     try {
         const response = await api.post("/exercises", data);
         return response.data;
@@ -58,9 +68,9 @@ export const postExercise = async (data: ExerciseData) => {
     }
 };
 
-type PartialExerciseData = Partial<ExerciseData>;
+type UpdateExercisePayload = Partial<CreateExercisePayload>;
 
-export const updateExercise = async (id: number, data: PartialExerciseData) => {
+export const updateExercise = async (id: number, data: UpdateExercisePayload): Promise<Exercise | undefined>  => {
     try {
         const response = await api.patch(`/exercises/${id}`, data);
         return response.data;

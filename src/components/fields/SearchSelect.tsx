@@ -1,11 +1,11 @@
 import { Autocomplete, TextField, type AutocompleteProps, type TextFieldProps } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
-import type { SearchSelectOption } from "../../types/formFieldSchema";
+import type { SearchSelectOption } from "../../types/form/formFieldSchema";
 
 type SearchSelectProps = Omit<AutocompleteProps<SearchSelectOption, false, false, false>, 'onChange' | 'options' | 'renderInput' | 'value'> & {
     options: SearchSelectOption[] | (() => Promise<SearchSelectOption[]>);
     onChange: (selectedOption: SearchSelectOption | null) => void;
-    value?: string;
+    value?: SearchSelectOption | null;
     input?: TextFieldProps;
 };
 
@@ -16,7 +16,7 @@ export default function SearchSelect({ options, onChange, value, input }: Search
         const m = new Map();
 
         selectOptions.forEach(option => {
-            m.set(option.id.toString(), option);
+            m.set(option.id, option);
         });
 
         return m;
@@ -37,13 +37,13 @@ export default function SearchSelect({ options, onChange, value, input }: Search
     }, [options]);
 
     return (
-        <Autocomplete
+        <Autocomplete<SearchSelectOption>
             disablePortal
             options={selectOptions}
             onChange={(_, option) => {
-                onChange(option || null);
+                onChange(option);
             }}
-            value={map.get(value) ?? null}
+            value={map.get(value?.id) ?? null}
             renderInput={(params) => <TextField {...input} {...params}  />}
         />
     );

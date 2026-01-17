@@ -1,5 +1,5 @@
 import { Box, Container, Paper, Typography } from "@mui/material";
-import LoginForm from "../../components/forms/LoginForm";
+import LoginForm from "../../components/auth/forms/LoginForm";
 import { Link, useNavigate } from "react-router-dom";
 
 type LoginPageProps = {

@@ -1,8 +1,8 @@
 import { Box } from "@mui/material";
-import Form from "../form/Form";
+import Form from "../../form/Form";
 import Alerts from "../Alerts";
-import type { Train } from "../../types/train";
-import useTrainForm from "../../hooks/trains/useTrainForm";
+import type { Train } from "../../../types/train";
+import useTrainForm from "../../../hooks/trains/useTrainForm";
 
 type TrainFormProps = {
     onSuccess: (train: Train) => void;

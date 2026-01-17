@@ -1,11 +1,15 @@
 import { useEffect } from "react";
-import type { FormFieldSchema } from "../../types/formFieldSchema";
-import { isNotEmpty } from "../../utils/validation";
+import type { FormFieldSchema } from "../../types/form/formFieldSchema";
+import { isEmpty } from "../../utils/validation";
 import useFormState from "./useFormState";
 
-export default function useForm(fields: FormFieldSchema[]) {
-    const initialValues = fields.reduce((acc, f) => ({ ...acc, [f.name]: "" }), {});
-    const formState = useFormState(initialValues);
+export default function useForm<T extends Record<string, any>>(fields: FormFieldSchema[]) {
+    const initialValues = fields.reduce((acc, f) => {
+        acc[f.name as keyof T] = null as T[keyof T];
+        return acc;
+    }, {} as T);
+
+    const formState = useFormState<T>(initialValues);
 
     const {
         form,
@@ -19,13 +23,15 @@ export default function useForm(fields: FormFieldSchema[]) {
     const validateFields = (validateAll = false): boolean => {
         let isValid = true;
 
-        fields.forEach(({ name, type, required, validators: rawValidators }) => {
+        fields.forEach(({ name: fieldName, type, required, validators: rawValidators }) => {
+            const name = fieldName as keyof T;
+
             const value = form[name];
 
             if (touched[name] || errors[name] || validateAll) {
                 let errorMessage: string | null = null;
 
-                if (required && !isNotEmpty(value)) {
+                if (required && isEmpty(value)) {
                     errorMessage = "This Field is required.";
                 } else if (type === 'number' && value && !+value) {
                     errorMessage = "This Field must be type of number.";
@@ -48,33 +54,31 @@ export default function useForm(fields: FormFieldSchema[]) {
         return isValid;
     };
 
-    const submitForm = (): Record<string, string | null> | false => {
+    const submitForm = (): T | undefined => {
         try {
             const isValid = validateFields(true);
 
-            if (!isValid) return false;
+            if (!isValid) return;
     
-            const filledForm: Record<string, string | null> = {};
+            const filledForm: T = {} as T;
     
-            Object.entries(form).forEach(([key, value]) => {
-                if (value) {
-                    filledForm[key] = value;
-                } else {
-                    filledForm[key] = null;
-                }
+            (Object.keys(form) as Array<keyof T>).forEach((key) => {
+                const value = form[key];
+                filledForm[key] = value;
             });
-    
+            
             return filledForm;
         } catch (err) {
             console.error(err);
-            return false;
+            return;
         }
     };
 
-    const fillFormFields = (data: Record<string, any>): { isValid: boolean, message?: string } => {
-        const newData: Record<string, string> = {};
+    const fillFormFields = (data: T): { isValid: boolean, message?: string } => {
+        const newData: T = {} as T;
 
-        for (const { name, type, validators: rawValidators } of fields) {
+        for (const { name: fieldName, type, validators: rawValidators } of fields) {
+            const name = fieldName as keyof T & string;
             const value = data[name];
 
             if (value) {

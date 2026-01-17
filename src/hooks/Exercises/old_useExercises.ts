@@ -1,18 +1,21 @@
 import { useEffect, useRef, useState } from "react";
-import { deleteExercise as serviceDeleteExercise, getExercises, type ExercisesFilters } from "../../services/exercisesService";
+import { deleteExercise as serviceDeleteExercise, type ExercisesQuery, getExercises } from "../../services/exercisesService";
 import type { Exercise } from "../../types/exercise";
 
 type useExercisesProps = {
-    filters?: ExercisesFilters;
+    filters?: Omit<ExercisesQuery, 'limit' | 'page'>;
+    limit?: number;
 }
 
-export default function useExercises({ filters }: useExercisesProps) {
+export default function useExercises({ filters, limit = 10 }: useExercisesProps) {
     const [exercises, setExercises] = useState<Exercise[] | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const page = useRef(1);
     const requestIdRef = useRef(0);
 
     const fetchExercises = async () => {
+        page.current = 0;
         const currRequestId = ++requestIdRef.current;
 
         const t = setTimeout(() => {
@@ -38,6 +41,21 @@ export default function useExercises({ filters }: useExercisesProps) {
             if (currRequestId !== requestIdRef.current) return;
             
             setIsLoading(false);
+        }
+    };
+
+    const loadMore = async () => {
+        try {
+            const exercises = await getExercises({
+                ...filters,
+                limit,
+                page: page.current
+            })
+
+            setExercises(prev => [...(prev || []), ...exercises]);
+        } catch (err: any) {
+            console.error(err);
+            setError(err.message || "Exercises load more failed")
         }
     };
 

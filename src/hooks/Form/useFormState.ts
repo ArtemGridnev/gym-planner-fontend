@@ -1,18 +1,22 @@
 import { useState } from "react";
 
-export default function useFormState(initialValues: Record<string, string>) {
-    const [form, setForm] = useState(initialValues);
-    const [errors, setErrors] = useState<Record<string, string | null>>({});
-    const [touched, setTouched] = useState<Record<string, boolean>>({});
+export default function useFormState<T extends Record<string, any>>(initialValues: T) {
+    const [form, setForm] = useState<T>(initialValues);
+    const [errors, setErrors] = useState<
+        Partial<Record<keyof T, string | null>>
+    >({});
+    const [touched, setTouched] = useState<
+        Partial<Record<keyof T, boolean>>
+    >({});
 
-    const handleChange = (field: string, value: string) => {
+    const handleChange = (field: string, value: any) => {
         setForm(prev => ({ ...prev, ...{ [field]: value }}));
     };
 
-    const handleError = (field: string, error: string | null) => {
+    const handleError = <K extends keyof T>(field: K, error: string | null) => {
         setErrors(prev => ({ ...prev, [field]: error }));
 
-        if (!touched[field]) {
+        if (!touched[field]) {1
             setTouched(prev => ({ ...prev, ...{ [field]: true }}));
         }
     };
@@ -23,14 +27,8 @@ export default function useFormState(initialValues: Record<string, string>) {
         }
     };
 
-    const setFormData = (data: Record<string, string>) => {
-        const currData = { ...form };
-
-        Object.keys(currData).forEach(key => {
-            currData[key] = data[key];
-        });
-
-        setForm(currData);
+    const setFormData = (data: T) => {
+        setForm({ ...form, ...data });
     };
 
     const cleanForm = () => {

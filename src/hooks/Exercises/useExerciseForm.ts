@@ -1,22 +1,49 @@
-import { useEffect, useState } from "react";
-import { exerciseFormFields as formFields } from "../../forms/exerciseFormFields";
+import { useEffect, useMemo, useState } from "react";
+import { getExerciseFormFields } from "../../forms/exerciseFormFields.schema";
 import useForm from "../form/useForm";
-import { getExercise, postExercise, updateExercise } from "../../services/exercisesService";
-import type { Exercise } from "../../types/exercise";
+import type { ExerciseCategory } from "../../types/exerciseCategory";
+import { useExerciseCategories } from "../../queries/hooks/useExerciseCategories";
+import type { FormFieldSchema, SearchSelectOption } from "../../types/form/formFieldSchema";
 
-export default function useExerciseForm(exerciseId: number | null = null) {
+export type ExerciseFormData = {
+    category: ExerciseCategory;
+    name: string;
+    description: string | null;
+    sets: number | null;
+    reps: number | null;
+    durationSeconds: number | null;
+    weight: number | null;
+};
+
+export default function useExerciseForm({ initialValues }: { initialValues?: ExerciseFormData }) {
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
+
+    const {
+        categories
+    } = useExerciseCategories();
+ 
+    const formFields = useMemo(() => {
+        if (categories) {
+            const options = categories.map((category: ExerciseCategory) => ({ id: category.id, value: category, label: category.name } as SearchSelectOption));
+
+            const fileds = getExerciseFormFields(options);
+
+            return fileds || [];
+        } else {
+            return [];
+        }
+    }, [categories]);
 
     const {
         formState,
         submitForm: useFromSubmit,
         fillFormFields,
         cleanFormFields
-    } = useForm(formFields);
+    } = useForm<ExerciseFormData>(formFields);
 
-    const submitForm = async (): Promise<Exercise | null> => {
+    const submitForm = (): ExerciseFormData | undefined => {
         setLoading(true);
         setSuccess(null);
         setError(null);
@@ -26,63 +53,23 @@ export default function useExerciseForm(exerciseId: number | null = null) {
     
             if (!form) {
                 setLoading(false);
-                return null;
+                return;
             }
 
-            if (exerciseId) {
-                const exercise = await updateExercise(exerciseId, {
-                    categoryId: form.categoryId!,
-                    name: form.name!,
-                    description: form.description,
-                    sets: form.sets,
-                    reps: form.reps,
-                    durationSeconds: form.durationSeconds,
-                    weight: form.weight
-                });
-
-                setSuccess('Exercise updated successfully!');
-
-                return exercise;
-            } else {
-                const exercise = await postExercise({
-                    categoryId: form.categoryId!,
-                    name: form.name!,
-                    description: form.description,
-                    sets: form.sets,
-                    reps: form.reps,
-                    durationSeconds: form.durationSeconds,
-                    weight: form.weight
-                });
-
-                setSuccess('New exercise created successfully!');
-
-                return exercise;
-            }
+            return form;
         } catch (err: any) {
             setError(err.message || "Exercise creation failed");
-            return null;
+            return;
         } finally {
             setLoading(false);
         }
     };
 
-    const editExercise = async (id: number) => {
-        const exercise = await getExercise(id);
-
-        if (!exercise) console.error('Exercise not found.');
-
-        const { isValid, message } = fillFormFields({ categoryId: exercise?.category.id.toString(), ...exercise });
-
-        if (!isValid) console.error(message);
-    };
-
     useEffect(() => {
-        if (exerciseId) {
-            editExercise(exerciseId);
-        } else {
-            cleanFormFields();
+        if (initialValues) {
+            fillFormFields(initialValues);
         }
-    }, [exerciseId])
+    }, [initialValues]);
 
     return ({
         formFields,
@@ -90,6 +77,7 @@ export default function useExerciseForm(exerciseId: number | null = null) {
         loading,
         success,
         error,
-        submitForm
+        submitForm,
+        cleanFormFields
     });
 }

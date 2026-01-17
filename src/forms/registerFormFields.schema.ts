@@ -1,4 +1,4 @@
-import type { FormFieldSchema } from "../types/formFieldSchema";
+import type { FormFieldSchema } from "../types/form/formFieldSchema";
 import { minLength, validateEmail } from "../utils/validation";
 
 const passwordValidators = [
