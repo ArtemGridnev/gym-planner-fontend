@@ -1,5 +1,4 @@
 import type { FormFieldSchema, SearchSelectOption } from '../types/form/formFieldSchema';
-import { maxLength } from '../utils/validation';
 
 export const getExerciseFormFields = (
     categories: SearchSelectOption[]
@@ -8,17 +7,19 @@ export const getExerciseFormFields = (
         label: "Category",
         name: "category",
         type: "searchSelect",
-        required: true,
-        options: categories
+        options: categories,
+        rules: {
+            required: { value: true, message: "This field is required." }
+        }
     },
     {
         label: "Name",
         name: "name",
         type: "text",
-        required: true,
-        validators: [
-            { fn: maxLength(50), message: "Name have to be less that 50 chars." }
-        ]
+        rules: {
+            required: { value: true, message: "This field is required." },
+            maxLength: { value: 50, message: "Name have to be less that 50 chars." }
+        }
     },
     {
         label: "Weight",
@@ -48,8 +49,8 @@ export const getExerciseFormFields = (
         label: "Description",
         name: "description",
         type: "textarea",
-        validators: [
-            { fn: maxLength(500), message: "Description have to be less that 500 chars." }
-        ]
+        rules: {
+            maxLength: { value: 500, message: "Description have to be less that 500 chars." }
+        }
     }
 ];

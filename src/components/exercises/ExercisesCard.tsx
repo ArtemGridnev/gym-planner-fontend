@@ -38,7 +38,7 @@ export default function ExercisesCard({ exercises, isLoading, error, onAdd, onEd
             setRows(exercises?.map(exercise => { 
                 return {
                     icon: FitnessCenterOutlined,
-                    title: `${exercise.name} - ${exercise.category.name}`,
+                    title: `${exercise.name} - ${exercise.category?.name}`,
                     data: {
                         id: exercise.id,
                         description: exercise.description,

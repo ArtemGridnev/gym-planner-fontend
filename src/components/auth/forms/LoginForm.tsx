@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import useLogin from "../../../hooks/auth/useLogin";
 import Alerts from "../../train/Alerts";
 import { useEffect } from "react";
@@ -11,7 +11,6 @@ type LoginFormProps = {
 export default function LoginForm({ onSuccess }: LoginFormProps) {
     const {
         formFields,
-        formState,
         handleSubmit,
         success,
         error,
@@ -26,7 +25,7 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
         <>
             <Alerts success={success} error={error} />
             <Box>
-                <Form formFields={formFields} {...formState} submitButtonText="Sign in" onSubmit={handleSubmit} loading={loading} />
+                <Form formFields={formFields} submitButtonText="Sign in" onSubmit={handleSubmit} isLoading={loading} />
             </Box>
         </>
     );

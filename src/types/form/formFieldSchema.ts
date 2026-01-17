@@ -1,9 +1,5 @@
 import type { ElementType } from "react";
-
-export type FormFieldSchemaValidator = {
-    fn: (value: string) => boolean;
-    message: string;
-};
+import type { RegisterOptions } from "react-hook-form";
 
 export type SelectOption = {
     value: string;
@@ -19,8 +15,7 @@ export type SearchSelectOption<T = any> = {
 export type BaseField = {
     name: string;
     label: string;
-    required?: boolean;
-    validators?: FormFieldSchemaValidator[] | ((formFields: Record<string, string>) => FormFieldSchemaValidator[]);
+    rules?: RegisterOptions;
     startAdornment?: ElementType | string;
     endAdornment?: ElementType | string;
 };

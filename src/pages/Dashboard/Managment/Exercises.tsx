@@ -1,76 +1,60 @@
-import useExercises from "../../../queries/hooks/useExercises";
-import { useState } from "react";
-import ExerciseFormModal from "../../../components/exercises/modals/ExerciseFormModal";
+import useExercises from "../../../queries/exercises/hooks/useExercises";
+import { useEffect, useState } from "react";
 import ExercisesCard from "../../../components/exercises/ExercisesCard";
-import { getExercise } from "../../../services/exercisesService";
-import { exerciseFormDataToCreatePayload, exerciseToFormData } from "../../../utils/exerciseUtils";
-import type { ExerciseFormData } from "../../../hooks/exercises/useExerciseForm";
+import useDeleteExercise from "../../../queries/exercises/hooks/useDeleteExercise";
+import useExerciseFormController from "../../../hooks/exercises/useExerciseFormController";
+import FormModal from "../../../components/form/FormModal";
+import ExerciseForm from "../../../components/exercises/forms/ExerciseForm";
 
 export default function Exercises() {
     const [filters, setFilters] = useState<Record<string, string>>();
     const {
         isPending,
-        exercises,
+        data: exercises,
         error,
-        addExercise,
-        updateExercise,
-        deleteExercise
     } = useExercises({ filters });
-    const [initialValues, setInitialValues] = useState<ExerciseFormData>();
-    
-    const [exerciseId, setExerciseId] = useState<number | null>(null);
+
+    const {
+        mutate: deleteExercise
+    } = useDeleteExercise();
+
     const [formOpen, setFormOpen] = useState(false);
     
-    const hanldeFormSuccess = (exerciseData: ExerciseFormData) => {
-        const payload = exerciseFormDataToCreatePayload(exerciseData);
-
-        if (exerciseId) {
-            updateExercise(payload);
-        } else {
-            addExercise(payload);
-        }
-    };
+    const {
+        editExercise,
+        createExercise,
+        formStates
+    } = useExerciseFormController();
 
     const onAdd = () => {
-        setExerciseId(null);
+        createExercise();
         setFormOpen(true);
     };
 
     const onEdit = async (id: number) => {
+        editExercise(id); 
         setFormOpen(true);
-        setExerciseId(id); 
-
-        try {
-            const exercise = await getExercise(id);
-
-            if (!exercise) return;
-
-            const formData = exerciseToFormData(exercise);
-
-            console.log('formData', formData)
-
-            setInitialValues(formData);
-        } catch (err: any) {
-            console.error(err.message || 'failed to fetch exercise');
-        }
     };
 
-    // useEffect(() => {
-    //     fetchExercises();
-    // }, []);
+    useEffect(() => {
+        if (formStates.success) {
+            setFormOpen(false);
+        }
+    }, [formStates.success]);
 
     return (
         <>
-            {formOpen && (
-                <ExerciseFormModal 
-                    open={formOpen}
-                    initialValues={initialValues} 
-                    modalTitle={exerciseId ? "Update Exercise" : "Create exercise"}
-                    submitButtonText={exerciseId ? "Update Exercise" : "Create Exercise"}
-                    onClose={() => setFormOpen(false)} 
-                    onSuccess={hanldeFormSuccess}
+            <FormModal
+                {...formStates}
+                open={formOpen}
+                modalTitle={formStates.exerciseId ? "Update Exercise" : "Create Exercise"}
+                onClose={() => setFormOpen(false)} 
+            >
+                <ExerciseForm 
+                    {...formStates}
+                    submitButtonText={formStates.exerciseId ? "Update Exercise" : "Create Exercise"}
                 />
-            )}
+            </FormModal>
 
             <ExercisesCard 
                 exercises={exercises}

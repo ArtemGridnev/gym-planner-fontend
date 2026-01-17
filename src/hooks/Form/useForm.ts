@@ -23,7 +23,7 @@ export default function useForm<T extends Record<string, any>>(fields: FormField
     const validateFields = (validateAll = false): boolean => {
         let isValid = true;
 
-        fields.forEach(({ name: fieldName, type, required, validators: rawValidators }) => {
+        fields.forEach(({ name: fieldName, type, required }) => { // , validators: rawValidators
             const name = fieldName as keyof T;
 
             const value = form[name];
@@ -35,12 +35,14 @@ export default function useForm<T extends Record<string, any>>(fields: FormField
                     errorMessage = "This Field is required.";
                 } else if (type === 'number' && value && !+value) {
                     errorMessage = "This Field must be type of number.";
-                } else if (rawValidators && value)  {
-                    const validators = typeof rawValidators === 'function' ? rawValidators(form) : rawValidators;
+                } 
+                
+                // else if (rawValidators && value)  {
+                //     const validators = typeof rawValidators === 'function' ? rawValidators(form) : rawValidators;
                     
-                    const failed = validators.find(m => !m.fn(value));
-                    errorMessage = failed?.message || null;
-                }
+                //     const failed = validators.find(m => !m.fn(value));
+                //     errorMessage = failed?.message || null;
+                // }
 
                 if (errorMessage) {
                     handleError(name, errorMessage);
@@ -77,24 +79,24 @@ export default function useForm<T extends Record<string, any>>(fields: FormField
     const fillFormFields = (data: T): { isValid: boolean, message?: string } => {
         const newData: T = {} as T;
 
-        for (const { name: fieldName, type, validators: rawValidators } of fields) {
+        for (const { name: fieldName, type } of fields) { // , validators: rawValidators
             const name = fieldName as keyof T & string;
             const value = data[name];
 
             if (value) {
-                if (rawValidators)  {
-                    if (type === 'number' && !+value) {
-                        return { isValid: false, message: `${name}: This Field must be type of number.` };
-                    }
+                // if (rawValidators)  {
+                //     if (type === 'number' && !+value) {
+                //         return { isValid: false, message: `${name}: This Field must be type of number.` };
+                //     }
 
-                    const validators = typeof rawValidators === 'function' ? rawValidators(form) : rawValidators;
+                //     const validators = typeof rawValidators === 'function' ? rawValidators(form) : rawValidators;
                     
-                    const failed = validators.find(m => !m.fn(value));
+                //     const failed = validators.find(m => !m.fn(value));
                     
-                    if (failed) {
-                        return { isValid: false, message: `${name}: ${failed.message}` };
-                    }
-                }
+                //     if (failed) {
+                //         return { isValid: false, message: `${name}: ${failed.message}` };
+                //     }
+                // }
 
                 newData[name] = value;
             }

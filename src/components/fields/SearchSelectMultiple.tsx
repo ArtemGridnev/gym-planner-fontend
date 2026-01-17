@@ -16,7 +16,7 @@ export default function SearchSelectMultiple({ options, onChange, value: rawValu
         const m = new Map();
 
         selectOptions.forEach(option => {
-            m.set(option.id.toString(), option);
+            m.set(option.id, option);
         });
 
         return m;

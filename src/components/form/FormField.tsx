@@ -6,138 +6,171 @@ import SearchSelect from "../fields/SearchSelect";
 import NumberField from "../fields/NumberField";
 import CronField from "../fields/CronField";
 import SearchSelectMultiple from "../fields/SearchSelectMultiple";
-import type { FormFieldValueMap } from "../../types/form/formFieldValueMap";
+import { Controller, useFormContext } from "react-hook-form";
 
-type FormFieldPropsByType<T extends FormFieldSchema> =
-    T & {
-        value: FormFieldValueMap[T["type"]];
-        error?: string | null;
-        onChange: (name: string, value: FormFieldValueMap[T["type"]]) => void;
-        onBlur?: (name: string) => void;
-    };
-
-export type FormFieldProps = {
-    [K in FormFieldSchema as K["type"]]: FormFieldPropsByType<K>
-}[FormFieldSchema["type"]];
-
-export default function FormField(props: FormFieldProps) {
+export default function FormField(props: FormFieldSchema) {
     const {
         name,
         label,
+        rules,
         type,
-        required,
-        value,
-        error,
-        onChange,
-        onBlur,
         ...otherProps
     } = props;
+
+    const { control } = useFormContext();
+
+    const required = rules?.required === true || (typeof rules?.required === 'object' && rules?.required?.value);
+
 
     switch (type) {
         case 'number':
             return (
-                <NumberField
-                    label={label}
-                    aria-label={label}
-                    type={type}
-                    required={required}
-                    onChange={({ target: { value: inputValue } }) => onChange(name, +inputValue)}
-                    onBlur={() => onBlur?.(name)}
-                    value={value}
-                    error={!!error}
-                    helperText={error}
-                    {...otherProps}
-                />  
+                <Controller
+                    name={name}
+                    control={control}
+                    rules={rules}
+                    render={({ field, fieldState }) => (
+                        <NumberField
+                            {...field}
+                            label={label}
+                            aria-label={label}
+                            type={type}
+                            error={!!fieldState.error}
+                            helperText={fieldState.error?.message}
+                            {...otherProps}
+                        />  
+                    )}
+                    />
             );
 
         case 'select':
             return (
-                <Select
-                    label={label}
-                    required={required}
-                    value={value}
-                    onChange={(selectedOption) => onChange(name, selectedOption)}
-                    onBlur={() => onBlur?.(name)}
-                    error={!!error}
-                    helperText={error}
-                    options={props.options}
-                />  
+                <Controller
+                    name={name}
+                    control={control}
+                    rules={rules}
+                    render={({ field, fieldState }) => (
+                        <Select
+                            {...field}
+                            label={label}
+                            required={required}
+                            error={!!fieldState.error}
+                            helperText={fieldState.error?.message}
+                            options={props.options}
+                        />  
+                    )}
+                />
             );
 
         case 'searchSelect':
             return (
-                <SearchSelect 
-                    input={{
-                        label,
-                        required,
-                        error: !!error,
-                        helperText: error
-                    }}
-                    value={value}
-                    onChange={(selectedOption) => onChange(name, selectedOption)}
-                    onBlur={() => onBlur?.(name)}
-                    options={props.options}
+                <Controller
+                    name={name}
+                    control={control}
+                    rules={rules}
+                    render={({ field, fieldState }) => (
+                        <SearchSelect 
+                            input={{
+                                label,
+                                error: !!fieldState.error,
+                                helperText: fieldState.error?.message,
+                                required
+                            }}
+                            value={field.value}
+                            onChange={field.onChange}
+                            onBlur={field.onBlur}
+                            options={props.options}
+                        />
+                    )}
                 />
             );
         
         case 'searchSelectMultiple':
             return (
-                <SearchSelectMultiple 
-                    input={{
-                        label,
-                        required,
-                        error: !!error,
-                        helperText: error
-                    }}
-                    value={value}
-                    onChange={(selectedOptions) => onChange(name, selectedOptions)}
-                    onBlur={() => onBlur?.(name)}
-                    options={props.options}
+                <Controller
+                    name={name}
+                    control={control}
+                    rules={rules}
+                    render={({ field, fieldState }) => (
+                        <SearchSelectMultiple 
+                            input={{
+                                label,
+                                required,
+                                error: !!fieldState.error,
+                                helperText: fieldState.error?.message
+                            }}
+                            value={field.value}
+                            onChange={field.onChange}
+                            onBlur={field.onBlur}
+                            options={props.options}
+                        />
+                    )}
                 />
             );
 
         case 'password':
             return (
-                <PasswordField
-                  label={label}
-                  required={required}
-                  value={value}
-                  onChange={({ target: { value: inputValue } }) => onChange(name, inputValue)}
-                  onBlur={() => onBlur?.(name)}
-                  error={!!error}
-                  helperText={error}
+                <Controller
+                    name={name}
+                    control={control}
+                    rules={rules}
+                    render={({ field, fieldState }) => (
+                        <PasswordField
+                        label={label}
+                        required={required}
+                        value={field.value}
+                        onChange={field.onChange}
+                        onBlur={field.onBlur}
+                        error={!!fieldState.error}
+                        helperText={fieldState.error?.message}
+                        />
+                    )}
                 />
             );
 
         case 'cron':
             return (
-                <CronField 
-                    fields={props.fields}
-                    onChange={(cron) => onChange(name, cron)}
-                    value={value}
-                 />
+                <Controller
+                    name={name}
+                    control={control}
+                    rules={rules}
+                    render={({ field }) => (
+                        <CronField 
+                            fields={props.fields}
+                            onChange={field.onChange}
+                            value={field.value}
+                        />
+                    )}
+                />
             );
 
         case 'textarea': 
         case 'text': 
         case 'email':
             return (
-                <TextField
-                    label={label}
-                    aria-label={label}
-                    type={type}
-                    required={required}
-                    onChange={({ target: { value: inputValue } }) => onChange(name, inputValue)}
-                    onBlur={() => onBlur?.(name)}
-                    value={value}
-                    error={!!error}
-                    helperText={error}
-                    {...(type === "textarea" ? {
-                        multiline: true,
-                        minRows: 4.5,
-                        maxRows: 6
-                    } : {})}
-                ></TextField>
+                <Controller
+                    name={name}
+                    control={control}
+                    rules={rules}
+                    render={({ field, fieldState }) => (
+                        <TextField
+                            label={label}
+                            aria-label={label}
+                            type={type}
+                            required={required}
+                            onChange={field.onChange}
+                            onBlur={field.onBlur}
+                            value={field.value}
+                            error={!!fieldState.error}
+                            helperText={fieldState.error?.message}
+                            {...(type === "textarea" ? {
+                                multiline: true,
+                                minRows: 4.5,
+                                maxRows: 6
+                            } : {})}
+                        ></TextField>
+                    )}
+                />
             );
     }
 }

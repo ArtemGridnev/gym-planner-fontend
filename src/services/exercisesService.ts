@@ -50,7 +50,7 @@ export const getExercisesCategories = async (): Promise<ExerciseCategory[] | und
 };
 
 export type CreateExercisePayload = {
-    categoryId: string;
+    categoryId: number;
     name: string;
     description: string | null;
     sets?: string | null;
@@ -62,6 +62,7 @@ export type CreateExercisePayload = {
 export const postExercise = async (data: CreateExercisePayload): Promise<Exercise | undefined> => {
     try {
         const response = await api.post("/exercises", data);
+
         return response.data;
     } catch (error: any) {
         handleApiError(error);
@@ -70,9 +71,11 @@ export const postExercise = async (data: CreateExercisePayload): Promise<Exercis
 
 type UpdateExercisePayload = Partial<CreateExercisePayload>;
 
-export const updateExercise = async (id: number, data: UpdateExercisePayload): Promise<Exercise | undefined>  => {
+export const updateExercise = async (data: UpdateExercisePayload & { id: number }): Promise<Exercise | undefined>  => {
+    const { id, ...payload } = data;
+
     try {
-        const response = await api.patch(`/exercises/${id}`, data);
+        const response = await api.patch(`/exercises/${id}`, payload);
         return response.data;
     } catch (error: any) {
         handleApiError(error);

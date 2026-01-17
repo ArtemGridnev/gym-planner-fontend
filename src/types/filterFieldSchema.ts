@@ -4,7 +4,7 @@ type SearchField = {
     type: 'search';
 };
 
-export type FilterFieldSchema = Omit<BaseField, 'validators' | 'required'> 
+export type FilterFieldSchema = Omit<BaseField, 'rules'> 
 & (SearchField | TextField | EmailField | SelectField | SearchSelectField | SearchSelectMultipleField | NumberField) & {
     debounce?: number
 };

@@ -60,7 +60,7 @@ export default function useTrain(id: number) {
         }
     };
 
-    let tempId = useRef(-1);
+    const tempId = useRef(-1);
 
     const addTrainExercises = async (exercises: Exercise[]) => {
         if (!train?.exercises) return;

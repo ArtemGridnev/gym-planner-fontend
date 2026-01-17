@@ -11,7 +11,6 @@ type RegisterFormProps = {
 export default function RegisterForm({ onSuccess }: RegisterFormProps) {
     const {
         formFields,
-        formState,
         handleSubmit,
         success,
         error,
@@ -26,7 +25,7 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
         <>
             <Alerts success={success} error={error} />
             <Box>
-                <Form formFields={formFields} {...formState} submitButtonText="Sign up" onSubmit={handleSubmit} loading={loading} />
+                <Form formFields={formFields} submitButtonText="Sign up" onSubmit={handleSubmit} isLoading={loading} />
             </Box>
         </>
     )
