@@ -4,7 +4,7 @@ import CardHeader from "../dashboard/content/card/CardHeader";
 import CardContent from "../dashboard/content/card/CardContent";
 import Toolbar from "../toolbar/Toolbar";
 import ExercisesListFilters from "./ExercisesListFilters";
-import Alerts from "../train/Alerts";
+import Alerts from "../Alerts";
 import DataCardList, { type DataCardListColumnProps, type DataCardListRowProps } from "../dataCardList/DataCardList";
 import DataCardListSkeleton from "../dataCardList/skeleton/DataCardListSkeleton";
 import { AddOutlined, DeleteOutline, EditOutlined, FitnessCenterOutlined } from "@mui/icons-material";
@@ -38,7 +38,7 @@ export default function ExercisesCard({ exercises, isLoading, error, onAdd, onEd
             setRows(exercises?.map(exercise => { 
                 return {
                     icon: FitnessCenterOutlined,
-                    title: `${exercise.name} - ${exercise.category.name}`,
+                    title: `${exercise.name} - ${exercise.category?.name}`,
                     data: {
                         id: exercise.id,
                         description: exercise.description,

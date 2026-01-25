@@ -9,7 +9,7 @@ type SearchSelectProps = Omit<AutocompleteProps<SearchSelectOption, false, false
     input?: TextFieldProps;
 };
 
-export default function SearchSelect({ options, onChange, value, input }: SearchSelectProps) {
+export default function SearchSelect({ options, onChange, value, input, ...props }: SearchSelectProps) {
     const [selectOptions, setSelectOptions] = useState<SearchSelectOption[]>([]);
 
     const map = useMemo(() => {
@@ -38,6 +38,7 @@ export default function SearchSelect({ options, onChange, value, input }: Search
 
     return (
         <Autocomplete<SearchSelectOption>
+            {...props}
             disablePortal
             options={selectOptions}
             onChange={(_, option) => {

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { register } from "../../services/authService";
 import { registerFormFields as formFields } from "../../forms/registerFormFields.schema";
 import { useAuthContext } from "../../context/AuthProvider";
-import useForm from "../form/useForm";
+import type { FieldValues } from "react-hook-form";
 
 export default function useRegister() {
     const { setUser } = useAuthContext();
@@ -10,25 +10,7 @@ export default function useRegister() {
     const [success, setSuccess] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
 
-    const {
-        formState,
-        submitForm
-    } = useForm(formFields);
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-
-        setLoading(true);
-        setSuccess(null);
-        setError(null);
-
-        const form = submitForm();
-
-        if (!form) {
-            setLoading(false);
-            return;
-        }
-
+    const handleSubmit = async (form: FieldValues) => {
         try {
             const data = await register({ 
                 firstName: form.firstName, 
@@ -49,7 +31,6 @@ export default function useRegister() {
 
     return ({
         formFields,
-        formState,
         handleSubmit,
         loading,
         success,

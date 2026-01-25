@@ -2,30 +2,21 @@ import { useState } from "react";
 import { login } from "../../services/authService";
 import { useAuthContext } from "../../context/AuthProvider";
 import { loginFormFields as formFields } from "../../forms/loginFormFields.schema";
-import useForm from "../form/useForm";
+import type { FieldValues } from "react-hook-form";
 
 export default function useLogin() {
     const { setUser } = useAuthContext();
-    const [loading, setLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [success, setSuccess] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
 
-    const {
-        formState,
-        submitForm
-    } = useForm(formFields);
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-
-        setLoading(true);
+    const handleSubmit = async (form: FieldValues) => {
+        setIsLoading(true);
         setSuccess(null);
         setError(null);
 
-        const form = submitForm();
-
         if (!form) {
-            setLoading(false);
+            setIsLoading(false);
             return;
         }
 
@@ -39,14 +30,13 @@ export default function useLogin() {
             setError(err.message || "Login failed");
         }
 
-        setLoading(false);
+        setIsLoading(false);
     };
 
     return ({
         formFields,
-        formState,
         handleSubmit,
-        loading,
+        isLoading,
         success,
         error
     });

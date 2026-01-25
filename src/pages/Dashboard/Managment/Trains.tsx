@@ -1,143 +1,86 @@
-import { Box } from "@mui/material";
-import Card from "../../../components/dashboard/content/card/Card";
-import CardHeader from "../../../components/dashboard/content/card/CardHeader";
-import { AddOutlined, DeleteOutline, EditOutlined, SportsMartialArtsOutlined } from "@mui/icons-material";
-import CardContent from "../../../components/dashboard/content/card/CardContent";
 import { useEffect, useState } from "react";
-import type { DataCardListColumnProps, DataCardListRowProps } from "../../../components/dataCardList/DataCardList";
-import useTrains from "../../../hooks/trains/useTrains";
-import DataCardList from "../../../components/dataCardList/DataCardList";
-import Modal from "../../../components/modal/Modal";
-import type { Train } from "../../../types/train";
-import TrainForm from "../../../components/train/forms/TrainFrom";
-import { useNavigate } from "react-router-dom";
-import Alerts from "../../../components/train/Alerts";
-import DataCardListSkeleton from "../../../components/dataCardList/skeleton/DataCardListSkeleton";
-
-function cronToDays(cron: string): string {
-    const days: Record<string, string> = {
-        '0': 'Sun',
-        '1': 'Mon',
-        '2': 'Tue',
-        '3': 'Wed',
-        '4': 'Thu',
-        '5': 'Fri',
-        '6': 'Sat'
-    };
-
-    const parts = cron?.trim()?.split(' ');
-        
-    const weekDaysKeys = parts[4]?.replaceAll('*', '').split(',') || [];
-
-    return weekDaysKeys.map((key) => days[key]).join(', ');
-}
-
-const columns: DataCardListColumnProps[] = [
-    { field: 'weekDays', name: 'Recurrence Days', fullWidth: true }
-];
+import Form from "../../../components/form/Form";
+import FormModal from "../../../components/form/FormModal";
+import TrainsCard from "../../../components/trains/TrainsCard";
+import useDeleteTrain from "../../../queries/trains/hooks/useDeleteTrain";
+import useTrains from "../../../queries/trains/hooks/useTrains";
+import useFormController from "../../../hooks/form/useFormController";
+import useCreateTrain from "../../../queries/trains/hooks/useCreateTrain";
+import useUpdateTrain from "../../../queries/trains/hooks/useUpdateTrain";
+import { trainFormFields } from "../../../forms/trainFormFields.schema";
+import { getTrain, type TrainData } from "../../../services/trainsService";
+import { trainToFormData } from "../../../utils/trainUtils";
 
 export default function Trains() {
-    const navigate = useNavigate();
     const { 
-        trains, 
-        loading, 
-        error, 
-        fetchTrains,
-        addTrain,
-        updateTrain,
-        deleteTrain
+        error,
+        isPending,
+        data: trains
     } = useTrains();
-    const [rows, setRows] = useState<DataCardListRowProps[]>([]);
-    const [trainId, setTrainId] = useState<number | null>(null);
+    
     const [formOpen, setFormOpen] = useState(false);
 
-    const onFormSubmit = (train: Train) => {
-        setFormOpen(false); 
-        
-        if (trainId) {
-            updateTrain(train);
-        } else {
-            addTrain(train);
-        }
+    const {
+        isUpdate,
+        edit: editTrain,
+        create: createTrain,
+        formStates
+    } = useFormController<TrainData>({
+        createMutation: useCreateTrain(),
+        updateMutation: useUpdateTrain(),
+        formFields: trainFormFields,
+        editQueryKey: (id: number) => ['train', id],
+        editQueryFn: async (id: number) => {
+            const train = await getTrain(id);
+
+            if (!train) return;
+
+            return trainToFormData(train)
+        },
+    });
+
+    const deleteMutation = useDeleteTrain();
+
+    const onAdd = () => {
+        createTrain();
+        setFormOpen(true);
+    };
+
+    const onEdit = async (id: number) => {
+        editTrain(id); 
+        setFormOpen(true);
     };
 
     useEffect(() => {
-        if (trains) {
-            setRows(trains?.map(train => ({
-                icon: SportsMartialArtsOutlined,
-                title: train.name,
-                data: {
-                    weekDays: cronToDays(train.recurrenceCron)
-                },
-                menuItems: [
-                    { 
-                        icon: EditOutlined, 
-                        text: 'edit', 
-                        onClick: () => {
-                            setTrainId(train.id); 
-                            setFormOpen(true);
-                        }  
-                    },
-                    { icon: DeleteOutline, text: 'delete', onClick: () => deleteTrain(train.id) },
-                ],
-                onClick: () => navigate(`/managment/trains/${train.id}`)
-            })));
-        } else {
-            setRows([]);
+        if (formStates.success) {
+            setFormOpen(false);
         }
-    }, [trains]);
-
-    useEffect(() => {
-        fetchTrains();
-    }, []);
+    }, [formStates.success]);
 
     return (
         <>
-            <Modal 
+            <FormModal
+                title={isUpdate ? "Update Train" : "Create Train"}
                 open={formOpen} 
                 onClose={() => setFormOpen(false)} 
-                width="30rem"
             >
-                <Modal.Header>{trainId ? "Update Train" : "Create Train"}</Modal.Header>
-                <Modal.Content>
-                    <Box sx={{ p: '0.75rem' }}>
-                        <TrainForm 
-                            onSuccess={onFormSubmit} 
-                            trainId={trainId}
-                        />
-                    </Box>
-                </Modal.Content>
-            </Modal>
-
-            <Card>
-                <CardHeader 
-                    title="Trainings"
-                    actions={[
-                        {
-                            icon: AddOutlined,
-                            label: 'Create Train',
-                            tooltip: 'Create Train',
-                            onClick: () => {
-                                setTrainId(null);
-                                setFormOpen(true);
-                            }
-                        }
-                    ]}
+                <Form
+                    {...formStates}
+                    submitButtonText={isUpdate ? "Update Train" : "Create Train"}
                 />
-                <CardContent>
-                    <Box 
-                        sx={{ 
-                            height: '100%',
-                            padding: '1rem',
-                            overflowY: loading ? 'hidden' : 'auto'
-                        }}
-                    >
-                        <Alerts error={error} />
-                        {loading && <DataCardListSkeleton columns={1} rows={8} icon={true} menuItems={true} />}
-                        {trains && !loading && <DataCardList columns={columns} rows={rows} />}
-                    </Box>
-                </CardContent>
-            </Card>
+            </FormModal>
+
+            <TrainsCard 
+                trains={trains}
+                isLoading={isPending}
+                error={error?.message || ''}
+                onAdd={onAdd}
+                onEdit={onEdit}
+                onDelete={deleteMutation.mutate}
+                onFiltersChange={(filters: Record<string, string>) => {
+                    // Handle filter changes if necessary
+                }}
+            />
         </>
     );
 }

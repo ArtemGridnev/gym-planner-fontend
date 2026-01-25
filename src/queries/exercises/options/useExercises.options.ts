@@ -1,6 +1,6 @@
 import type { QueryFunctionContext, QueryObserverOptions } from "@tanstack/react-query";
-import { getExercises, type ExercisesQuery } from "../../services/exercisesService";
-import type { Exercise } from "../../types/exercise";
+import { getExercises, type ExercisesQuery } from "../../../services/exercisesService";
+import type { Exercise } from "../../../types/exercise";
 
 export const exercisesQueryOptions = (filters?: ExercisesQuery): QueryObserverOptions<Exercise[], Error> => ({
     queryKey: ['exercises', filters],

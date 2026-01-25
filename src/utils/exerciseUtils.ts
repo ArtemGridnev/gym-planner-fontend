@@ -1,10 +1,10 @@
-import type { ExerciseFormData } from "../hooks/exercises/useExerciseForm";
+import type { ExerciseFormData } from "../hooks/exercises/useExerciseFormController";
 import type { CreateExercisePayload } from "../services/exercisesService";
 import type { Exercise } from "../types/exercise";
 
 export const exerciseFormDataToCreatePayload = (exercise: ExerciseFormData): CreateExercisePayload => {
     return {
-        categoryId: `${exercise.category.id}`,
+        categoryId: exercise.category.id,
         name: exercise.name,
         description: exercise.description ?? null,
         sets: exercise.sets?.toString() ?? null,

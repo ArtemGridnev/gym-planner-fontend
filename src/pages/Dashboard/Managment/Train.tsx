@@ -10,7 +10,7 @@ import DraggableDataCardList, { type DraggableDataCardListRowProps } from "../..
 import type { DataCardListColumnProps } from "../../../components/dataCardList/DataCardList";
 import { useEffect, useState } from "react";
 import ExercisesSelectModal from "../../../components/exercises/modals/ExercisesSelectModal";
-import Alerts from "../../../components/train/Alerts";
+import Alerts from "../../../components/Alerts";
 import DraggableDataCardListSkeleton from "../../../components/dataCardList/skeleton/DraggableDataCardListSkeleton";
 
 const columns: DataCardListColumnProps[] = [

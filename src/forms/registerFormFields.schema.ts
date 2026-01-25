@@ -14,49 +14,59 @@ export const registerFormFields: FormFieldSchema[] = [
         label: "First name",
         name: "firstName",
         type: "text",
-        required: true,
-        validators: [
-            { fn: minLength(2), message: "First name should be at least two characters long." }
-        ]
+        rules: {
+            required: { value: true, message: "This field is required." }
+        }
+        // validators: [
+        //     { fn: minLength(2), message: "First name should be at least two characters long." }
+        // ]
     },
     {
         label: "Last name",
         name: "lastName",
         type: "text",
-        required: true,
-        validators: [
-            { fn: minLength(2), message: "Last name should be at least two characters long." }
-        ]
+        rules: {
+            required: { value: true, message: "This field is required." }
+        }
+        // validators: [
+        //     { fn: minLength(2), message: "Last name should be at least two characters long." }
+        // ]
     },
     {
         label: "Email",
         name: "email",
         type: "email",
-        required: true,
-        validators: [
-            { fn: validateEmail, message: "Not valid email." }
-        ]
+        rules: {
+            required: { value: true, message: "This field is required." }
+        }
+        // validators: [
+        //     { fn: validateEmail, message: "Not valid email." }
+        // ]
     },
     {
         label: "Password",
         name: "password",
         type: "password",
-        required: true,
-        validators: [
-            ...passwordValidators
-        ]
+        rules: {
+            required: { value: true, message: "This field is required." }
+        }
+        // validators: [
+        //     ...passwordValidators
+        // ]
     },
     {
         label: "Validate Password",
         name: "validatePassword",
         type: "password",
-        required: true,
-        validators: (formValues) => [
-            {
-                fn: (value: string) => value === formValues.password,
-                message: "Passwords do not match"
-            }
-        ]
+        rules: {
+            required: { value: true, message: "This field is required." }
+        }
+        // validators: (formValues) => [
+        //     {
+        //         fn: (value: string) => value === formValues.password,
+        //         message: "Passwords do not match"
+        //     }
+        // ]
     }
 ];
 

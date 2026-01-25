@@ -1,76 +1,71 @@
-import useExercises from "../../../queries/hooks/useExercises";
-import { useState } from "react";
-import ExerciseFormModal from "../../../components/exercises/modals/ExerciseFormModal";
+import useExercises from "../../../queries/exercises/hooks/useExercises";
+import { useEffect, useState } from "react";
 import ExercisesCard from "../../../components/exercises/ExercisesCard";
-import { getExercise } from "../../../services/exercisesService";
-import { exerciseFormDataToCreatePayload, exerciseToFormData } from "../../../utils/exerciseUtils";
-import type { ExerciseFormData } from "../../../hooks/exercises/useExerciseForm";
+import useDeleteExercise from "../../../queries/exercises/hooks/useDeleteExercise";
+import FormModal from "../../../components/form/FormModal";
+import Form from "../../../components/form/Form";
+import type { ExerciseCategory } from "../../../types/exerciseCategory";
+import useExerciseFormController from "../../../hooks/exercises/useExerciseFormController";
+
+export type ExerciseFormData = {
+    category: ExerciseCategory;
+    name: string;
+    description: string | null;
+    sets: number | null;
+    reps: number | null;
+    durationSeconds: number | null;
+    weight: number | null;
+};
 
 export default function Exercises() {
     const [filters, setFilters] = useState<Record<string, string>>();
     const {
         isPending,
-        exercises,
+        data: exercises,
         error,
-        addExercise,
-        updateExercise,
-        deleteExercise
     } = useExercises({ filters });
-    const [initialValues, setInitialValues] = useState<ExerciseFormData>();
-    
-    const [exerciseId, setExerciseId] = useState<number | null>(null);
-    const [formOpen, setFormOpen] = useState(false);
-    
-    const hanldeFormSuccess = (exerciseData: ExerciseFormData) => {
-        const payload = exerciseFormDataToCreatePayload(exerciseData);
 
-        if (exerciseId) {
-            updateExercise(payload);
-        } else {
-            addExercise(payload);
-        }
-    };
+    const {
+        mutate: deleteExercise
+    } = useDeleteExercise();
+
+    const [formOpen, setFormOpen] = useState(false);
+
+    const {
+        isUpdate,
+        edit: editExercise,
+        create: createExercise,
+        formStates
+    } = useExerciseFormController();
 
     const onAdd = () => {
-        setExerciseId(null);
+        createExercise();
         setFormOpen(true);
     };
 
     const onEdit = async (id: number) => {
+        editExercise(id); 
         setFormOpen(true);
-        setExerciseId(id); 
-
-        try {
-            const exercise = await getExercise(id);
-
-            if (!exercise) return;
-
-            const formData = exerciseToFormData(exercise);
-
-            console.log('formData', formData)
-
-            setInitialValues(formData);
-        } catch (err: any) {
-            console.error(err.message || 'failed to fetch exercise');
-        }
     };
 
-    // useEffect(() => {
-    //     fetchExercises();
-    // }, []);
+    useEffect(() => {
+        if (formStates.success) {
+            setFormOpen(false);
+        }
+    }, [formStates.success]);
 
     return (
         <>
-            {formOpen && (
-                <ExerciseFormModal 
-                    open={formOpen}
-                    initialValues={initialValues} 
-                    modalTitle={exerciseId ? "Update Exercise" : "Create exercise"}
-                    submitButtonText={exerciseId ? "Update Exercise" : "Create Exercise"}
-                    onClose={() => setFormOpen(false)} 
-                    onSuccess={hanldeFormSuccess}
+            <FormModal
+                open={formOpen}
+                title={isUpdate ? "Update Exercise" : "Create Exercise"}
+                onClose={() => setFormOpen(false)} 
+            >
+                <Form 
+                    {...formStates}
+                    submitButtonText={isUpdate ? "Update Exercise" : "Create Exercise"}
                 />
-            )}
+            </FormModal>
 
             <ExercisesCard 
                 exercises={exercises}

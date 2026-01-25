@@ -1,13 +1,13 @@
-import { FormControl, FormLabel, ToggleButtonGroup as MuiToggleButtonGroup, ToggleButton } from "@mui/material";
+import { FormControl, FormLabel, ToggleButtonGroup as MuiToggleButtonGroup, type ToggleButtonGroupProps as MuiToggleButtonGroupProps, ToggleButton } from "@mui/material";
 
-type ToggleButtonGroupParams = {
+type ToggleButtonGroupProps = {
     label: string;
     options: { value: string, name: string }[];
     onChange: (selectedValues: string[]) => void;
     value: string[];
-};
+} & Omit<MuiToggleButtonGroupProps, 'onChange' | 'value'>;
 
-export default function ToggleButtonGroup({ label, options, onChange, value }: ToggleButtonGroupParams) {
+export default function ToggleButtonGroup({ label, options, onChange, value }: ToggleButtonGroupProps) {
   return (
     <FormControl fullWidth sx={{ mb: 2 }}>
         <FormLabel sx={{ mb: 1 }}>{label}</FormLabel>
@@ -19,16 +19,16 @@ export default function ToggleButtonGroup({ label, options, onChange, value }: T
                 flexWrap: "wrap",
             }}
         >
-        {options.map(({ value, name }) => (
-            <ToggleButton
-                key={value}
-                value={value}
-                sx={{ px: 2 }}
-            >
-                {name}
-            </ToggleButton>
-        ))}
-      </MuiToggleButtonGroup>
+            {options.map(({ value, name }) => (
+                <ToggleButton
+                    key={value}
+                    value={value}
+                    sx={{ px: 2 }}
+                >
+                    {name}
+                </ToggleButton>
+            ))}
+        </MuiToggleButtonGroup>
     </FormControl>
   );
 }
