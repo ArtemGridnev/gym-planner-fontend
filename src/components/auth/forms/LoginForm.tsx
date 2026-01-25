@@ -1,6 +1,4 @@
-import { Box } from "@mui/material";
 import useLogin from "../../../hooks/auth/useLogin";
-import Alerts from "../../train/Alerts";
 import { useEffect } from "react";
 import Form from "../../form/Form";
 
@@ -14,7 +12,7 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
         handleSubmit,
         success,
         error,
-        loading
+        isLoading
     } = useLogin();
 
     useEffect(() => {
@@ -23,10 +21,14 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
 
     return (
         <>
-            <Alerts success={success} error={error} />
-            <Box>
-                <Form formFields={formFields} submitButtonText="Sign in" onSubmit={handleSubmit} isLoading={loading} />
-            </Box>
+            <Form 
+                onSuccess={handleSubmit} 
+                formFields={formFields} 
+                submitButtonText="Sign in" 
+                isLoading={isLoading} 
+                success={success}
+                error={error}
+            />
         </>
     );
 }

@@ -11,15 +11,6 @@ export type ExercisesQuery = {
     limit?: number;
 };
 
-// export const getExercises = async () => {
-//     try {
-//         const response = await api.get(`/exercises`);
-//         return response.data;
-//     } catch (error: any) {
-//         handleApiError(error);
-//     }
-// };
-
 export const getExercises = async (filters?: ExercisesQuery) => {
     const query = filters ? objectToQuery(filters) : '';
 

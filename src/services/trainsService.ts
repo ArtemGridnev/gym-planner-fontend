@@ -20,7 +20,7 @@ export const getTrain = async (id: number): Promise<Train | undefined> => {
     }
 };
 
-type TrainData = {
+export type TrainData = {
     name: string;
     recurrenceCron: string;
 };
@@ -34,11 +34,13 @@ export const postTrain = async (data: TrainData) => {
     }
 };
 
-type PartialTrainData = Partial<TrainData>;
+type PartialTrainData = Partial<TrainData> & { id: number};
 
-export const updateTrain = async (id: number, data: PartialTrainData) => {
+export const updateTrain = async (data: PartialTrainData) => {
+    const { id, ...payload } = data;
+
     try {
-        const response = await api.patch(`/trains/${id}`, data);
+        const response = await api.patch(`/trains/${id}`, payload);
         return response.data;
     } catch (error: any) {
         handleApiError(error);

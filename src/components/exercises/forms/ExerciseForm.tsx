@@ -1,7 +1,8 @@
 import { Box } from "@mui/material";
 import Form from "../../form/Form";
-import useExerciseForm, { type ExerciseFormData } from "../../../hooks/exercises/useExerciseForm";
-import Alerts from "../../train/Alerts";
+import Alerts from "../../Alerts";
+import type { ExerciseFormData } from "../../../hooks/exercises/useExerciseFormController";
+import useExerciseFormFields from "../../../hooks/exercises/useExerciseFormFields";
 
 export type ExerciseFormProps = {
     initialValues?: ExerciseFormData;
@@ -13,9 +14,7 @@ export type ExerciseFormProps = {
 };
 
 export default function ExerciseForm({ initialValues, submitButtonText, onSuccess, isLoading, success, error }: ExerciseFormProps) {
-    const {
-        formFields
-    } = useExerciseForm();
+    const formFields = useExerciseFormFields();
 
     return (
         <>
@@ -24,7 +23,7 @@ export default function ExerciseForm({ initialValues, submitButtonText, onSucces
                 <Form 
                     formFields={formFields} 
                     submitButtonText={submitButtonText} 
-                    onSubmit={(fieldValues) => { onSuccess(fieldValues as ExerciseFormData) }} 
+                    onSuccess={(fieldValues) => { onSuccess(fieldValues as ExerciseFormData) }} 
                     isLoading={isLoading}
                     initialValues={initialValues}
                 />

@@ -2,13 +2,13 @@ import { Box } from "@mui/material";
 import { useEffect } from "react";
 import { FormProvider as RHFProvider, useForm, type FieldValues } from "react-hook-form";
 
-type FormProviderProps = {
-    onSubmit: (data: FieldValues) => void;
+export type FormProviderProps = {
+    onSuccess: (data: FieldValues) => void;
     children: React.ReactNode;
     initialValues?: FieldValues;
 };
 
-export default function FormProvider({ children, onSubmit, initialValues }: FormProviderProps) {
+export default function FormProvider({ children, onSuccess, initialValues }: FormProviderProps) {
     const methods = useForm({ 
         mode: 'onBlur'
     });
@@ -21,7 +21,7 @@ export default function FormProvider({ children, onSubmit, initialValues }: Form
         <RHFProvider {...methods}>
             <Box
                 component="form"
-                onSubmit={methods.handleSubmit(onSubmit)}
+                onSubmit={methods.handleSubmit(onSuccess)}
                 noValidate
             >
                 {children}

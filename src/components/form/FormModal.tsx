@@ -4,19 +4,19 @@ import Modal from "../modal/Modal";
 
 type FormModalProps = {
     open?: boolean;
-    modalTitle: string;
+    title: string;
     onClose: () => void;
     children: ReactNode;
 };
 
-export default function FormModal({ open = true, modalTitle, onClose, children }: FormModalProps) {
+export default function FormModal({ open = true, title, onClose, children }: FormModalProps) {
     return (
         <Modal
             open={open}
             onClose={onClose}
             width="30rem"
         >
-            <Modal.Header>{modalTitle}</Modal.Header>
+            <Modal.Header>{title}</Modal.Header>
             <Modal.Content>
                 <Box sx={{ p: '0.75rem' }}>
                     {children}

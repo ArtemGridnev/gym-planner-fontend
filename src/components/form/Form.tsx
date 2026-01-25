@@ -1,44 +1,45 @@
 import { Box, Button, CircularProgress } from "@mui/material";
-import type { FormFieldSchema } from '../../types/form/formFieldSchema';
-import FormField from "./FormField";
-import FormProvider from "./FormProvider";
-import { type FieldValues } from "react-hook-form";
+import Alerts from "../Alerts.tsx";
+import type { FormFieldSchema } from "../../types/form/formFieldSchema.ts";
+import FormField from "./FormField.tsx";
+import FormProvider, { type FormProviderProps } from "./FormProvider.tsx";
 
-type FormProps = {
+export type FormProps = Omit<FormProviderProps, 'children'> & {
     formFields: FormFieldSchema[];
-    initialValues?: FieldValues;
     submitButtonText: string;
+    disabled?: boolean;
     isLoading?: boolean;
-    onSubmit: (data: FieldValues) => void;
+    success?: string | null,
+    error?: string | null
 };
 
-export default function Form({
-    formFields,
-    initialValues,
-    submitButtonText,
-    isLoading,
-    onSubmit,
-}: FormProps) {
+export default function Form({ initialValues, onSuccess, formFields, submitButtonText, disabled, isLoading, success, error }: FormProps) {
     return (
-        <FormProvider onSubmit={onSubmit} initialValues={initialValues}>
-            <Box
-                sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 2
-                }}
+        <>
+            <Alerts success={success} error={error} />
+            <FormProvider 
+                initialValues={initialValues}
+                onSuccess={onSuccess}
             >
-                {formFields.map((field, index) => (
-                    <FormField 
-                        {...field} 
-                        key={index}
-                    ></FormField>
-                ))}
-
-                <Button type="submit" variant="contained" disabled={isLoading}>
-                    {isLoading ? <CircularProgress size={20} color="inherit" /> : submitButtonText}
-                </Button>
-            </Box>
-        </FormProvider>
-    );
+                <Box
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 2
+                    }}
+                >
+                    {formFields.map((field, index) => (
+                        <FormField 
+                            disabled={disabled}
+                            {...field} 
+                            key={index}
+                        ></FormField>
+                    ))} 
+                    <Button type="submit" variant="contained" disabled={isLoading || disabled}>
+                        {isLoading ? <CircularProgress size={20} color="inherit" /> : submitButtonText}
+                    </Button>
+                </Box>
+            </FormProvider>
+        </>
+    )
 }

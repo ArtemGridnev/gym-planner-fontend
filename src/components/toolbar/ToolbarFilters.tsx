@@ -20,7 +20,7 @@ export default function ToolbarFilters({
             sx={{
                 display: "flex",
                 width: '100%',
-                height: '2rem',
+                minHeight: '2rem',
                 gap: 2,
             }}
         >

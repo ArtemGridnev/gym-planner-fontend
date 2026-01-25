@@ -4,7 +4,7 @@ import CardHeader from "../dashboard/content/card/CardHeader";
 import CardContent from "../dashboard/content/card/CardContent";
 import Toolbar from "../toolbar/Toolbar";
 import ExercisesListFilters from "./ExercisesListFilters";
-import Alerts from "../train/Alerts";
+import Alerts from "../Alerts";
 import DataCardList, { type DataCardListColumnProps, type DataCardListRowProps } from "../dataCardList/DataCardList";
 import DataCardListSkeleton from "../dataCardList/skeleton/DataCardListSkeleton";
 import { AddOutlined, DeleteOutline, EditOutlined, FitnessCenterOutlined } from "@mui/icons-material";

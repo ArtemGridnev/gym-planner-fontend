@@ -1,4 +1,4 @@
-import type { ExerciseFormData } from "../hooks/exercises/useExerciseForm";
+import type { ExerciseFormData } from "../hooks/exercises/useExerciseFormController";
 import type { CreateExercisePayload } from "../services/exercisesService";
 import type { Exercise } from "../types/exercise";
 

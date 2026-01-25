@@ -1,7 +1,5 @@
-import { Box } from "@mui/material";
 import useRegister from "../../../hooks/auth/useRegister";
 import Form from "../../form/Form";
-import Alerts from "../../train/Alerts";
 import { useEffect } from "react";
 
 type RegisterFormProps = {
@@ -23,10 +21,14 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
 
     return (
         <>
-            <Alerts success={success} error={error} />
-            <Box>
-                <Form formFields={formFields} submitButtonText="Sign up" onSubmit={handleSubmit} isLoading={loading} />
-            </Box>
+            <Form 
+                formFields={formFields} 
+                submitButtonText="Sign up" 
+                onSuccess={handleSubmit} 
+                isLoading={loading} 
+                success={success} 
+                error={error}
+            />
         </>
     )
 }

@@ -14,7 +14,7 @@ export default function useDeleteExercise() {
 
             queryClient.setQueriesData(
                 { queryKey: ['exercises'] },
-                (old: Exercise[]) => old.filter((exercise: Exercise) => exercise.id !== exerciseId)
+                (old: Exercise[]) => old.filter(exercise => exercise.id !== exerciseId)
             )
 
             return { prev };

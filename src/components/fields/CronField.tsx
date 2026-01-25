@@ -5,9 +5,10 @@ type CronFieldProps = {
     fields: ('weekDays')[];
     onChange: (cron: string) => void;
     value: string;
+    disabled?: boolean;
 };
 
-export default function CronField({ fields, onChange, value }: CronFieldProps) {
+export default function CronField({ fields, onChange, value, disabled }: CronFieldProps) {
     const [weekDays, setWeekDays] = useState<string[]>([]);
 
     useEffect(() => {
@@ -19,6 +20,8 @@ export default function CronField({ fields, onChange, value }: CronFieldProps) {
     }, [weekDays]);
 
     useEffect(() => {
+        if (!value) return;
+
         const parts = value?.trim()?.split(' ');
         const valueWeekDays = !parts[4] || parts[4] === '*' ? [] : parts[4].replaceAll('*', '').split(',').filter(str => str !== '');
 
@@ -47,6 +50,7 @@ export default function CronField({ fields, onChange, value }: CronFieldProps) {
                                 ]}
                                 value={weekDays}
                                 onChange={(values) => setWeekDays(values)}
+                                disabled={disabled}
                             />
                         );
                 }

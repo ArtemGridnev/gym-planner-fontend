@@ -2,9 +2,20 @@ import useExercises from "../../../queries/exercises/hooks/useExercises";
 import { useEffect, useState } from "react";
 import ExercisesCard from "../../../components/exercises/ExercisesCard";
 import useDeleteExercise from "../../../queries/exercises/hooks/useDeleteExercise";
-import useExerciseFormController from "../../../hooks/exercises/useExerciseFormController";
 import FormModal from "../../../components/form/FormModal";
-import ExerciseForm from "../../../components/exercises/forms/ExerciseForm";
+import Form from "../../../components/form/Form";
+import type { ExerciseCategory } from "../../../types/exerciseCategory";
+import useExerciseFormController from "../../../hooks/exercises/useExerciseFormController";
+
+export type ExerciseFormData = {
+    category: ExerciseCategory;
+    name: string;
+    description: string | null;
+    sets: number | null;
+    reps: number | null;
+    durationSeconds: number | null;
+    weight: number | null;
+};
 
 export default function Exercises() {
     const [filters, setFilters] = useState<Record<string, string>>();
@@ -19,10 +30,11 @@ export default function Exercises() {
     } = useDeleteExercise();
 
     const [formOpen, setFormOpen] = useState(false);
-    
+
     const {
-        editExercise,
-        createExercise,
+        isUpdate,
+        edit: editExercise,
+        create: createExercise,
         formStates
     } = useExerciseFormController();
 
@@ -45,14 +57,13 @@ export default function Exercises() {
     return (
         <>
             <FormModal
-                {...formStates}
                 open={formOpen}
-                modalTitle={formStates.exerciseId ? "Update Exercise" : "Create Exercise"}
+                title={isUpdate ? "Update Exercise" : "Create Exercise"}
                 onClose={() => setFormOpen(false)} 
             >
-                <ExerciseForm 
+                <Form 
                     {...formStates}
-                    submitButtonText={formStates.exerciseId ? "Update Exercise" : "Create Exercise"}
+                    submitButtonText={isUpdate ? "Update Exercise" : "Create Exercise"}
                 />
             </FormModal>
 

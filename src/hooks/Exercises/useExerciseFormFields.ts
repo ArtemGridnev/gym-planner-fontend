@@ -4,17 +4,7 @@ import type { ExerciseCategory } from "../../types/exerciseCategory";
 import { useExerciseCategories } from "../../queries/exercises/hooks/useExerciseCategories";
 import type { SearchSelectOption } from "../../types/form/formFieldSchema";
 
-export type ExerciseFormData = {
-    category: ExerciseCategory;
-    name: string;
-    description: string | null;
-    sets: number | null;
-    reps: number | null;
-    durationSeconds: number | null;
-    weight: number | null;
-};
-
-export default function useExerciseForm() {
+export default function useExerciseFormFields() {
     const {
         data: categories
     } = useExerciseCategories();
@@ -27,7 +17,5 @@ export default function useExerciseForm() {
         return getExerciseFormFields(options);
     }, [categories]);
 
-    return ({
-        formFields
-    });
+    return formFields;
 }
