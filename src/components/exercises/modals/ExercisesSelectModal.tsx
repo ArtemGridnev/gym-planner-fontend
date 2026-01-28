@@ -24,12 +24,15 @@ type ExercisesSelectModalProps = {
 
 export default function ExercisesSelectModal({ open, onClose, onSubmit }: ExercisesSelectModalProps) {
     const {
-        exercisesRows,
-        isLoading,
+        rows,
+        isPending,
+        hasNextPage,
         selected,
+        loadMoreRef,
         setFilters,
         handleCheck,
-        handleSubmit
+        handleSubmit,
+        cleanSelected
     } = useExercisesSelect({ onSubmit });
 
     return (
@@ -44,12 +47,12 @@ export default function ExercisesSelectModal({ open, onClose, onSubmit }: Exerci
                 <Box 
                     sx={{
                         height: '100%',
-                        overflowY: !exercisesRows ? 'hidden' : 'auto'
+                        overflowY: !rows ? 'hidden' : 'auto'
                     }}
                 >
                     <Toolbar>
                         <ExercisesListFilters onChange={setFilters} />
-                        {isLoading && exercisesRows && (
+                        {isPending && rows && (
                             <LinearProgress 
                                 sx={{
                                     position: 'absolute',
@@ -61,17 +64,17 @@ export default function ExercisesSelectModal({ open, onClose, onSubmit }: Exerci
                             />
                         )}
                     </Toolbar>
-                    <Box sx={{ p: '0.75rem' }}>
-                        {exercisesRows && (
+                    <Box sx={{ display: 'flex', padding: '1rem', gap: '1rem', flexDirection: 'column' }}>
+                        {!isPending && rows && (
                             <SelectableDataCardList 
                                 selected={Object.keys(selected)}
-                                rows={exercisesRows} 
+                                rows={rows} 
                                 columns={exercisesColumns} 
                                 onChange={handleCheck} 
                                 noDataMessage={"No items found."}
                             />
                         )}
-                        {!exercisesRows && <SelectableDataCardListSkeleton columns={{ min: 3, max: 6 }} rows={8} icon={true} menuItems={true} />}
+                        {(isPending || hasNextPage) && <SelectableDataCardListSkeleton ref={loadMoreRef} columns={{ min: 3, max: 6 }} rows={6} icon={true} menuItems={true} />}
                     </Box>
                 </Box>
             </Modal.Content>

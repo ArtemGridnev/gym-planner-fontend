@@ -1,14 +1,14 @@
-import { Box, Skeleton } from "@mui/material";
+import { Box, Skeleton, type BoxProps } from "@mui/material";
 import DataCardListItemSkeleton from "./DataCardListItemSkeleton";
 
-type SelectableDataCardListSkeletonProps = {
+type SelectableDataCardListSkeletonProps = BoxProps &{
     columns: number | { min: number, max: number };
     rows: number;
     icon?: boolean;
     menuItems?: boolean;
 };
 
-export default function SelectableDataCardListSkeleton({ columns, rows, icon, menuItems }: SelectableDataCardListSkeletonProps) {
+export default function SelectableDataCardListSkeleton({ columns, rows, icon, menuItems, ...props }: SelectableDataCardListSkeletonProps) {
     return (
         <Box
             sx={{
@@ -16,6 +16,7 @@ export default function SelectableDataCardListSkeleton({ columns, rows, icon, me
                 gap: '1rem',
                 flexDirection: 'column'
             }}
+            {...props}
         >
             {Array.from({ length: rows }).map((_, index) => (
                 <Box 

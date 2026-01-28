@@ -6,13 +6,13 @@ export type SelectableDataCardListRowProps = DataCardListRowProps & {
     id: string
 };
 
-type SelectableDataCardListProps = Omit<DataCardListProps, 'rows'> & {
+type SelectableDataCardListProps = Omit<DataCardListProps, 'rows' | 'onChange'> & {
     rows: SelectableDataCardListRowProps[];
     selected: string[];
     onChange: (id: string, checked: boolean) => void;
 };
 
-export default function SelectableDataCardList({ columns, rows, selected, onChange, noDataMessage = "No items here… yet." }: SelectableDataCardListProps) {
+export default function SelectableDataCardList({ columns, rows, selected, onChange, noDataMessage = "No items here… yet.", ...props }: SelectableDataCardListProps) {
     return (
         <Box
             sx={{
@@ -20,6 +20,7 @@ export default function SelectableDataCardList({ columns, rows, selected, onChan
                 gap: '1rem',
                 flexDirection: 'column'
             }}
+            {...props}
         >
             {rows.length === 0 && <Typography variant="h6" sx={{ textAlign: 'center'}}>{noDataMessage}</Typography>}
             {rows.map((row) => (

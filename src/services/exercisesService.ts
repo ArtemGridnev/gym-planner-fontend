@@ -5,10 +5,10 @@ import { objectToQuery } from '../utils/queryHelpers.ts';
 import type { ExerciseCategory } from '../types/exerciseCategory.ts';
 
 export type ExercisesQuery = {
+    cursor?: number;
+    limit?: number;
     search?: string;
     category?: string;
-    page?: number;
-    limit?: number;
 };
 
 export const getExercises = async (filters?: ExercisesQuery) => {

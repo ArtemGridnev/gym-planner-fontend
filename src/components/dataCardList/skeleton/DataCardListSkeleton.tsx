@@ -1,19 +1,22 @@
-import { Box } from "@mui/material";
+import { Box, type BoxProps } from "@mui/material";
 import DataCardListItemSkeleton from "./DataCardListItemSkeleton";
 
-export type DataCardListSkeletonProps = {
+export type DataCardListSkeletonProps = BoxProps &{
     columns: number | { min: number, max: number };
     rows: number;
     icon?: boolean;
     menuItems?: boolean;
 };
 
-export default function DataCardListSkeleton({ columns, rows, icon, menuItems }: DataCardListSkeletonProps) {
+export default function DataCardListSkeleton({ columns, rows, icon, menuItems, ...props }: DataCardListSkeletonProps) {
     return (
-        <Box sx={{
-            containerName: 'CardListContainer',
-            containerType: 'inline-size'
-        }}>
+        <Box 
+            sx={{
+                containerName: 'CardListContainer',
+                containerType: 'inline-size'
+            }}
+            {...props}
+        >
             <Box
                 sx={{
                     display: 'grid',

@@ -6,6 +6,7 @@ import FormModal from "../../../components/form/FormModal";
 import Form from "../../../components/form/Form";
 import type { ExerciseCategory } from "../../../types/exerciseCategory";
 import useExerciseFormController from "../../../hooks/exercises/useExerciseFormController";
+import useInfiniteScroll from "../../../hooks/useInfiniteScroll";
 
 export type ExerciseFormData = {
     category: ExerciseCategory;
@@ -21,15 +22,20 @@ export default function Exercises() {
     const [filters, setFilters] = useState<Record<string, string>>();
     const {
         isPending,
-        data: exercises,
+        data,
         error,
+        hasNextPage,
+        isFetchingNextPage,
+        fetchNextPage
     } = useExercises({ filters });
+
+    const loadMoreRef = useInfiniteScroll({ hasNextPage, isFetchingNextPage, fetchNextPage });
+
+    const [formOpen, setFormOpen] = useState(false);
 
     const {
         mutate: deleteExercise
     } = useDeleteExercise();
-
-    const [formOpen, setFormOpen] = useState(false);
 
     const {
         isUpdate,
@@ -68,8 +74,10 @@ export default function Exercises() {
             </FormModal>
 
             <ExercisesCard 
-                exercises={exercises}
-                isLoading={isPending}
+                loadMoreRef={loadMoreRef}
+                exercises={data?.pages.flat() || []}
+                hasNextPage={hasNextPage}
+                isPending={isPending}
                 error={error?.message || ''}
                 onAdd={onAdd}
                 onEdit={onEdit}
