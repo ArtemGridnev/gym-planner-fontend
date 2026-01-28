@@ -14,7 +14,7 @@ type DraggableDataCardListProps = Omit<DataCardListProps, 'rows'> & {
     onChange: (rows: DraggableDataCardListRowProps[]) => void;
 };
 
-export default function DraggableDataCardList({ columns, rows, onChange, noDataMessage = "No items here… yet." }: DraggableDataCardListProps) {
+export default function DraggableDataCardList({ columns, rows, onChange, noDataMessage = "No items here… yet.", ...props }: DraggableDataCardListProps) {
     const handleDragEnd = (event: any) => {
         const {active, over} = event;
         
@@ -40,6 +40,7 @@ export default function DraggableDataCardList({ columns, rows, onChange, noDataM
                         gap: '1rem',
                         flexDirection: 'column'
                     }}
+                    {...props}
                 >
                     {rows.length === 0 && <Typography variant="h6" sx={{ textAlign: 'center', }}>{noDataMessage}</Typography>}
                     {rows.map((row) => (
